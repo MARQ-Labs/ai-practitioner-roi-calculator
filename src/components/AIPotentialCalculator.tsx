@@ -13,7 +13,6 @@ import TabNavigation from "./calculator/TabNavigation";
 import PageFooter from "./calculator/PageFooter";
 import DepartmentEditor from "./DepartmentEditor";
 import CustomCostCalculator from "./calculator/CustomCostCalculator";
-import TimelineVisualization from "./calculator/timelineVisualization/TimelineVisualization";
 
 const AIPotentialCalculator: React.FC = () => {
   // Basic state
@@ -22,7 +21,6 @@ const AIPotentialCalculator: React.FC = () => {
   const [activeTab, setActiveTab] = useState("capacity");
   const [selectedIndustry, setSelectedIndustry] = useState("technology");
   const [customDepartments, setCustomDepartments] = useState<Department[]>([]);
-  const [customCost, setCustomCost] = useState({ amount: 100000, isRecurring: false });
   const { toast } = useToast();
   
   // Get current industry data
@@ -63,11 +61,6 @@ const AIPotentialCalculator: React.FC = () => {
   const handleDepartmentsChange = (departments: Department[]) => {
     setCustomDepartments(departments);
   };
-
-  // Handle custom cost change
-  const handleCustomCostChange = (cost: { amount: number, isRecurring: boolean }) => {
-    setCustomCost(cost);
-  };
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
@@ -102,7 +95,6 @@ const AIPotentialCalculator: React.FC = () => {
           totalBenefit={totalImpact.financialImpact} 
           timeHorizon={timeHorizon}
           adoptionRate={adoptionRate}
-          onCostChange={handleCustomCostChange}
         />
       </div>
       
@@ -112,17 +104,6 @@ const AIPotentialCalculator: React.FC = () => {
         industryROI={currentIndustry.overallROI?.toString() || "0"}
         leaderROI={roiData.leadersROI}
       />
-
-      {/* Timeline Visualization */}
-      <div className="mb-8 mt-8">
-        <TimelineVisualization
-          departments={currentDepartments}
-          adoptionRate={adoptionRate}
-          maxTimeHorizon={Math.max(24, timeHorizon)} // Always show at least 24 months
-          industryId={selectedIndustry}
-          costs={customCost}
-        />
-      </div>
       
       {/* Tab Navigation */}
       <TabNavigation

@@ -133,9 +133,5 @@ export const calculateTotalImpact = (
  */
 export const calculateROI = (investment: number, returnValue: number): number => {
   if (investment <= 0) return 0; // Prevent division by zero
-  
-  // If the return value is negative, ROI should be negative
-  if (returnValue <= 0) return -100;
-  
-  return ((returnValue - investment) / investment) * 100;
+  return (returnValue - investment) / investment * 100;
 };
