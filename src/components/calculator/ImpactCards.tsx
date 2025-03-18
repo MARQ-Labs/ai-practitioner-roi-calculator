@@ -11,6 +11,9 @@ interface ImpactCardsProps {
 }
 
 const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, leaderROI }) => {
+  // Calculate annualized ROI
+  const calculatedROI = totalImpact.roi || parseFloat(industryROI);
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
       <Card className="bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.15s" }}>
@@ -77,13 +80,13 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, lea
             <Icon name="trendingUp" className="text-green-600" size={28} />
           </div>
           <div className="text-3xl font-bold text-green-800 mb-1">
-            {industryROI}%
+            {calculatedROI.toFixed(1)}%
           </div>
           <p className="text-sm text-green-700">
-            Industry average AI investment return
+            Projected return based on impact calculations
           </p>
           <div className="text-xs text-green-600 mt-4 flex items-center">
-            <span className="font-medium">AI Leaders:</span>
+            <span className="font-medium">Industry benchmark:</span>
             <span className="ml-1">{leaderROI} for mature implementations</span>
           </div>
         </CardContent>
