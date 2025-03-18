@@ -410,6 +410,13 @@ export const industryData: IndustryData = {
       { id: "dept3", name: "Risk Assessment", avgSalary: 95000, headcount: 8, efficiencyGain: 55 },
       { id: "dept4", name: "Customer Service", avgSalary: 60000, headcount: 15, efficiencyGain: 74 },
       { id: "dept5", name: "Fraud Detection", avgSalary: 85000, headcount: 6, efficiencyGain: 65 }
+    ],
+    manufacturing: [
+      { id: "dept1", name: "Executive", avgSalary: 180000, headcount: 3, efficiencyGain: 15 },
+      { id: "dept2", name: "Operations", avgSalary: 75000, headcount: 15, efficiencyGain: 39 },
+      { id: "dept3", name: "Supply Chain", avgSalary: 85000, headcount: 10, efficiencyGain: 64 },
+      { id: "dept4", name: "Quality Control", avgSalary: 80000, headcount: 8, efficiencyGain: 45 },
+      { id: "dept5", name: "R&D", avgSalary: 110000, headcount: 6, efficiencyGain: 42 }
     ]
   }
 };
