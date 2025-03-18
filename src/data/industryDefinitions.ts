@@ -4,6 +4,7 @@ import { DEPARTMENT_ROI } from "./departmentROI";
 
 export const industryDefinitions: Record<string, Industry> = {
   technology: {
+    id: "technology",
     name: "Information & Communication Technology",
     description: "Software companies, IT services, and tech startups",
     overallROI: 45,
@@ -24,6 +25,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "13 months"
   },
   manufacturing: {
+    id: "manufacturing",
     name: "Manufacturing",
     description: "Manufacturing companies, industrial production, and factory operations",
     overallROI: 40,
@@ -44,6 +46,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "16 months"
   },
   finance: {
+    id: "finance",
     name: "Financial Services",
     description: "Banks, investment firms, and financial advisories",
     overallROI: 42,
@@ -64,6 +67,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "14 months"
   },
   healthcare: {
+    id: "healthcare",
     name: "Healthcare",
     description: "Hospitals, clinics, care facilities, and healthcare providers",
     overallROI: 38,
@@ -84,6 +88,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "18 months"
   },
   retail: {
+    id: "retail",
     name: "Retail & Consumer Goods",
     description: "Retailers, e-commerce, and consumer goods businesses",
     overallROI: 36,
@@ -104,6 +109,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "15 months"
   },
   media: {
+    id: "media",
     name: "Media & Telecommunications",
     description: "Media companies, publishers, telecoms, and broadcasting",
     overallROI: 37,
@@ -124,6 +130,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "14 months"
   },
   professional: {
+    id: "professional",
     name: "Professional Services",
     description: "Consulting firms, legal services, and professional advisories",
     overallROI: 34,
@@ -144,6 +151,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "16 months"
   },
   energy: {
+    id: "energy",
     name: "Energy & Utilities",
     description: "Energy companies, utilities, and resource management",
     overallROI: 33,
@@ -164,6 +172,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "19 months"
   },
   logistics: {
+    id: "logistics",
     name: "Transportation & Logistics",
     description: "Shipping, transportation, and logistics services",
     overallROI: 35,
@@ -184,6 +193,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "15 months"
   },
   insurance: {
+    id: "insurance",
     name: "Insurance",
     description: "Insurance providers, brokers, and risk management",
     overallROI: 36,
@@ -204,6 +214,7 @@ export const industryDefinitions: Record<string, Industry> = {
     maturityTimeline: "16 months"
   },
   tourism: {
+    id: "tourism",
     name: "Tourism & Hospitality",
     description: "Tourism organizations, hotels, tour operators, and destination management",
     overallROI: 30,
