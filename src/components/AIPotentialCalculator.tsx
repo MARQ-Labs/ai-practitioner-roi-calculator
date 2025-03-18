@@ -38,10 +38,9 @@ const AIPotentialCalculator: React.FC = () => {
 
   // Tabs configuration
   const tabs = [
-    { id: "capacity", label: "Department Impact", icon: "users" },
-    { id: "insights", label: "Industry Insights", icon: "lightbulb" },
-    { id: "efficiency", label: "Efficiency Gains", icon: "layers" },
-    { id: "customize", label: "Customize Departments", icon: "edit" }
+    { id: "capacity", label: "Department Impact", icon: "users" as const },
+    { id: "insights", label: "Industry Insights", icon: "lightbulb" as const },
+    { id: "efficiency", label: "Efficiency Gains", icon: "layers" as const }
   ];
 
   // Reset custom departments when industry changes
@@ -102,6 +101,53 @@ const AIPotentialCalculator: React.FC = () => {
               <p className="text-sm text-teal-600">{currentIndustry.description}</p>
             </div>
           </div>
+        </div>
+        
+        {/* Department Editor - Moved here from tab content */}
+        <div className="mb-8 animate-fade-in">
+          <Card className="border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-xl">
+                <div className="flex items-center gap-2">
+                  <Icon name="users" className="text-teal-700" />
+                  Customize Your Organization's Departments
+                </div>
+              </CardTitle>
+              <CardDescription>
+                Define your actual departments and team structure for a more accurate calculation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4 bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-md">
+                <h3 className="font-medium text-amber-800 mb-1">Department Customization Guide</h3>
+                <p className="text-sm text-amber-700">
+                  Start by using the industry template, then modify departments to match your organization. 
+                  Your custom departments will be used for all calculations.
+                </p>
+              </div>
+              
+              <div className="mb-6">
+                <button
+                  onClick={() => setCustomDepartments(industryDepartments)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 text-sm font-medium transition-colors"
+                >
+                  Load {currentIndustry.name} Template
+                </button>
+                <button
+                  onClick={() => setCustomDepartments([])}
+                  className="ml-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 text-sm font-medium transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
+              
+              <DepartmentEditor 
+                departments={customDepartments} 
+                onDepartmentsChange={handleDepartmentsChange}
+                industryId={selectedIndustry}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
       
@@ -371,50 +417,6 @@ const AIPotentialCalculator: React.FC = () => {
                     The model considers adoption rate, time horizon, and department-specific efficiency factors.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Customize Departments Tab */}
-        {activeTab === "customize" && (
-          <div className="mt-4 animate-slide-in-right">
-            <Card>
-              <CardHeader>
-                <CardTitle>Customize Your Organization</CardTitle>
-                <CardDescription>
-                  Define your actual departments and team structure for a more accurate calculation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4 bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-md">
-                  <h3 className="font-medium text-amber-800 mb-1">Department Customization Guide</h3>
-                  <p className="text-sm text-amber-700">
-                    Start by using the industry template, then modify departments to match your organization. 
-                    Your custom departments will be used for all calculations across the calculator.
-                  </p>
-                </div>
-                
-                <div className="mb-6">
-                  <button
-                    onClick={() => setCustomDepartments(industryDepartments)}
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 text-sm font-medium transition-colors"
-                  >
-                    Load {currentIndustry.name} Template
-                  </button>
-                  <button
-                    onClick={() => setCustomDepartments([])}
-                    className="ml-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 text-sm font-medium transition-colors"
-                  >
-                    Clear All
-                  </button>
-                </div>
-                
-                <DepartmentEditor 
-                  departments={customDepartments} 
-                  onDepartmentsChange={handleDepartmentsChange}
-                  industryId={selectedIndustry}
-                />
               </CardContent>
             </Card>
           </div>
