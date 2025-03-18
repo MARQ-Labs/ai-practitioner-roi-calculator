@@ -3,16 +3,25 @@ import React from "react";
 import { Card, CardContent } from "@/components/Card";
 import Icon from "@/components/Icon";
 import { TotalImpact } from "@/models/calculator";
+import { calculateROI } from "@/services/calculatorService";
 
 interface ImpactCardsProps {
   totalImpact: TotalImpact;
   industryROI: string;
   leaderROI: string;
+  customCost?: number;
 }
 
-const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, leaderROI }) => {
-  // Use the time-adjusted ROI from totalImpact, fallback to industry average if needed
-  const calculatedROI = totalImpact.roi || parseFloat(industryROI);
+const ImpactCards: React.FC<ImpactCardsProps> = ({ 
+  totalImpact, 
+  industryROI, 
+  leaderROI,
+  customCost = 0 
+}) => {
+  // Calculate ROI using the same method as CustomCostCalculator 
+  // Use custom cost if provided, otherwise use a default calculation
+  const investment = customCost > 0 ? customCost : totalImpact.financialImpact * 0.3;
+  const calculatedROI = calculateROI(investment, totalImpact.financialImpact);
   
   // Get status message based on ROI
   const getRoiStatusMessage = (roi: number) => {
@@ -95,8 +104,8 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, lea
             {getRoiStatusMessage(calculatedROI)}
           </p>
           <div className={`text-xs ${calculatedROI >= 0 ? 'text-green-600' : 'text-amber-600'} mt-4 flex items-center`}>
-            <span className="font-medium">Industry benchmark:</span>
-            <span className="ml-1">{leaderROI} for mature implementations</span>
+            <span className="font-medium">Investment amount:</span>
+            <span className="ml-1">${Math.round(investment).toLocaleString()}</span>
           </div>
         </CardContent>
       </Card>

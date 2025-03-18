@@ -5,7 +5,7 @@ import ROIChart from "@/components/ROIChart";
 import { Industry, TimelinePoint } from "@/models/calculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TimelineVisualization from "@/components/TimelineVisualization";
-import { generateTimelineData } from "@/services/calculatorService";
+import { generateTimelineData, calculateROI } from "@/services/calculatorService";
 import { industryData } from "@/data/industryData";
 
 interface ROIAnalysisTabProps {
@@ -35,32 +35,38 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     industry.id
   );
   
-  // Adjust ROI values based on time horizon and adoption rate
-  const timeHorizonAdjustment = timeHorizon / 12;
-  const adoptionFactor = adoptionRate / 100;
-  const breakEvenThreshold = 4; // Consistent with other components
+  // Use the last point of timeline data to get the final financial impact
+  const finalImpact = timelineData.length > 0 
+    ? timelineData[timelineData.length - 1].financialImpact 
+    : 0;
+    
+  // Calculate ROI using the same method as in CustomCostCalculator and ImpactCards
+  const totalBenefit = industryDepartments.length > 0 
+    ? timelineData[timelineData.length - 1].cumulativeReturn + (customCost || calculateEstimatedInvestment(industryDepartments)) 
+    : 0;
+    
+  const calculatedROI = calculateROI(customCost || calculateEstimatedInvestment(industryDepartments), totalBenefit);
   
-  // For very short horizons, adjust ROI to potentially show negative values
-  const getTimeAdjustedROI = (roi: number) => {
-    if (timeHorizon <= breakEvenThreshold) {
-      // Calculate negative ROI for very short time periods
-      return -25 + ((timeHorizon / breakEvenThreshold) * 25 * adoptionFactor);
+  // Function to estimate investment (copied from calculatorService.ts for consistency)
+  function calculateEstimatedInvestment(departments: any[]): number {
+    const totalHeadcount = departments.reduce((total, dept) => total + dept.headcount, 0);
+    const baseInvestment = Math.max(15000, totalHeadcount * 2000);
+    
+    if (totalHeadcount > 100) {
+      return baseInvestment * 0.8;
     }
-    return roi * timeHorizonAdjustment * adoptionFactor;
-  };
-  
-  const adjustedIndustryROI = industry.overallROI 
-    ? getTimeAdjustedROI(industry.overallROI).toFixed(1) 
-    : "0";
+    
+    return baseInvestment;
+  }
     
   // For leaders ROI, still show potential even during negative periods
   const leaderROIValue = roiData.leadersROI 
     ? parseFloat(roiData.leadersROI.replace('%', '')) 
     : 0;
     
-  const adjustedLeadersROI = timeHorizon <= breakEvenThreshold
-    ? "Break-even at " + (breakEvenThreshold) + " months"
-    : (leaderROIValue * timeHorizonAdjustment * adoptionFactor).toFixed(1) + "%";
+  const adjustedLeadersROI = calculatedROI < 0
+    ? "Break-even at 4 months"
+    : (leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(1) + "%";
 
   return (
     <div className="mt-4 animate-slide-in-right">
@@ -86,9 +92,9 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                 <h3 className="font-semibold text-lg mb-2">ROI Key Metrics</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between border-b pb-2">
-                    <span className="text-gray-600">{timeHorizon}-Month Industry Avg ROI:</span>
-                    <span className={`font-bold ${parseFloat(adjustedIndustryROI) < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
-                      {adjustedIndustryROI}%
+                    <span className="text-gray-600">{timeHorizon}-Month Projected ROI:</span>
+                    <span className={`font-bold ${calculatedROI < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
+                      {calculatedROI.toFixed(1)}%
                     </span>
                   </div>
                   <div className="flex justify-between border-b pb-2">
