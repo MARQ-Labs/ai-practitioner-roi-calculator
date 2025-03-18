@@ -12,6 +12,7 @@ import ImpactCards from "./calculator/ImpactCards";
 import TabNavigation from "./calculator/TabNavigation";
 import PageFooter from "./calculator/PageFooter";
 import DepartmentEditor from "./DepartmentEditor";
+import CustomCostCalculator from "./calculator/CustomCostCalculator";
 
 const AIPotentialCalculator: React.FC = () => {
   // Basic state
@@ -95,6 +96,9 @@ const AIPotentialCalculator: React.FC = () => {
         leaderROI={roiData.leadersROI}
       />
 
+      {/* Custom Cost Calculator */}
+      <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
+      
       {/* Tab Navigation */}
       <TabNavigation
         activeTab={activeTab}
