@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
@@ -90,7 +91,11 @@ const AIPotentialCalculator: React.FC = () => {
       
       {/* Custom Cost Calculator - Moved above Impact Cards with spacing */}
       <div className="mb-8">
-        <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
+        <CustomCostCalculator 
+          totalBenefit={totalImpact.financialImpact} 
+          timeHorizon={timeHorizon}
+          adoptionRate={adoptionRate}
+        />
       </div>
       
       {/* Impact Cards */}

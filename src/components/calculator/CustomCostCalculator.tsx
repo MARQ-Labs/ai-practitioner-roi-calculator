@@ -15,9 +15,15 @@ interface CostItem {
 
 interface CustomCostCalculatorProps {
   totalBenefit: number;
+  timeHorizon?: number;
+  adoptionRate?: number;
 }
 
-const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefit }) => {
+const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ 
+  totalBenefit,
+  timeHorizon = 12,
+  adoptionRate = 70
+}) => {
   const [costItems, setCostItems] = useState<CostItem[]>([
     { id: '1', name: 'Software Licenses', amount: 10000 },
     { id: '2', name: 'Implementation Services', amount: 15000 },
@@ -28,8 +34,25 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
   const [isExpanded, setIsExpanded] = useState(false);
 
   const totalCost = costItems.reduce((sum, item) => sum + item.amount, 0);
-  const calculatedROI = calculateROI(totalCost, totalBenefit);
-  const paybackPeriodMonths = totalCost > 0 ? (totalCost / (totalBenefit / 12)) : 0;
+  
+  // Apply time horizon and adoption rate adjustments consistent with the rest of the app
+  const breakEvenThreshold = 4; // months below which ROI starts becoming negative
+  const adoptionFactor = adoptionRate / 100;
+  const timeHorizonAdjustment = timeHorizon / 12;
+  
+  // Calculate benefit with time and adoption adjustments
+  let adjustedBenefit = totalBenefit;
+  if (timeHorizon <= breakEvenThreshold) {
+    // For very short time horizons, reduce the benefit significantly
+    const timeProgress = timeHorizon / breakEvenThreshold;
+    adjustedBenefit = totalBenefit * timeProgress * adoptionFactor * 0.5; // More aggressive reduction
+  } else {
+    // Normal benefit adjustment based on time horizon and adoption
+    adjustedBenefit = totalBenefit * timeHorizonAdjustment * adoptionFactor;
+  }
+  
+  const calculatedROI = calculateROI(totalCost, adjustedBenefit);
+  const paybackPeriodMonths = totalCost > 0 ? (totalCost / (adjustedBenefit / 12)) : 0;
 
   const handleAddItem = () => {
     if (newItemName.trim() === '') return;
@@ -67,6 +90,8 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
   };
 
   const getRecommendationText = (roi: number) => {
+    if (timeHorizon <= breakEvenThreshold)
+      return "Initial investment phase. Consider extending time horizon to 6+ months for positive ROI.";
     if (roi > 100) 
       return "Strong ROI potential. Consider accelerating implementation.";
     if (roi > 50)
@@ -170,8 +195,8 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
                 </div>
                 
                 <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                  <span className="text-gray-600">Projected AI Benefits:</span>
-                  <span className="font-bold text-teal-600">${totalBenefit.toLocaleString()}</span>
+                  <span className="text-gray-600">Projected AI Benefits ({timeHorizon} months):</span>
+                  <span className="font-bold text-teal-600">${Math.round(adjustedBenefit).toLocaleString()}</span>
                 </div>
                 
                 <div className="flex justify-between items-center py-2 border-b border-gray-200">
@@ -184,10 +209,12 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
                 <div className="flex justify-between items-center py-2">
                   <span className="text-gray-600">Payback Period:</span>
                   <span className="font-bold text-indigo-600">
-                    {paybackPeriodMonths < 1 
-                      ? 'Less than 1 month'
+                    {timeHorizon <= breakEvenThreshold 
+                      ? 'Beyond time horizon'
                       : calculatedROI < 0
                       ? 'Beyond time horizon'
+                      : paybackPeriodMonths < 1 
+                      ? 'Less than 1 month'
                       : `${Math.ceil(paybackPeriodMonths)} months`}
                   </span>
                 </div>
@@ -198,6 +225,11 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
                 <p className="text-sm text-gray-600">
                   {getRecommendationText(calculatedROI)}
                 </p>
+                {timeHorizon <= breakEvenThreshold && (
+                  <p className="text-xs text-amber-600 mt-2">
+                    Note: ROI is typically negative in the first {breakEvenThreshold} months during initial implementation and training phase.
+                  </p>
+                )}
               </div>
             </div>
           </div>

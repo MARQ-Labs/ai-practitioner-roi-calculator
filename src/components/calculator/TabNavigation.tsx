@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
@@ -55,11 +56,12 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             adoptionRate={adoptionRate} 
             timeHorizon={timeHorizon}
             industryId={industryId}
+            industryName={industry.name}
           />
         </TabsContent>
         
         <TabsContent value="efficiency" className="animate-slide-in-right">
-          <EfficiencyGainsTab industry={industry} />
+          <EfficiencyGainsTab industryId={industryId} industry={industry} />
         </TabsContent>
         
         <TabsContent value="roi" className="animate-slide-in-right">
@@ -72,7 +74,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         </TabsContent>
         
         <TabsContent value="industry" className="animate-slide-in-right">
-          <IndustryInsightsTab industryId={industryId} />
+          <IndustryInsightsTab industryId={industryId} industry={industry} />
         </TabsContent>
       </Tabs>
     </div>
