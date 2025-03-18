@@ -17,6 +17,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { industryData } from "@/data/industryData";
 
 interface DepartmentEditorProps {
   departments: Department[];
@@ -81,6 +82,42 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
     });
   };
 
+  const autoPopulateDepartments = () => {
+    // Get the standard departments for this industry
+    const standardDepartments = industryData.industryDepartments[industryId] || [];
+    
+    // If there are already custom departments, ask user to confirm replacement
+    if (departments.length > 0) {
+      const confirmed = window.confirm(
+        "This will replace your current departments with industry standard ones. Continue?"
+      );
+      if (!confirmed) return;
+    }
+
+    onDepartmentsChange(standardDepartments);
+    
+    toast({
+      title: "Departments auto-populated",
+      description: `Added ${standardDepartments.length} standard departments for ${industryData.industries[industryId]?.name || industryId}`,
+    });
+  };
+
+  const clearAllDepartments = () => {
+    if (departments.length === 0) return;
+    
+    const confirmed = window.confirm(
+      "Are you sure you want to remove all departments?"
+    );
+    if (!confirmed) return;
+    
+    onDepartmentsChange([]);
+    
+    toast({
+      title: "All departments removed",
+      description: "Your department list has been cleared",
+    });
+  };
+
   return (
     <Card className="mt-6 animate-fade-in">
       <CardHeader>
@@ -91,13 +128,35 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
               Department Management
             </div>
           </CardTitle>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Add Department"}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={autoPopulateDepartments}
+              className="bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100"
+            >
+              <Icon name="refresh-cw" className="mr-1 h-4 w-4" /> 
+              Auto-populate
+            </Button>
+            {departments.length > 0 && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={clearAllDepartments}
+                className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+              >
+                <Icon name="trash-2" className="mr-1 h-4 w-4" /> 
+                Clear All
+              </Button>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Add Department"}
+            </Button>
+          </div>
         </div>
       </CardHeader>
 
@@ -190,26 +249,35 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
             <div className="w-10"></div>
           </div>
           
-          {departments.map((dept) => (
-            <div key={dept.id} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 rounded transition-colors">
-              <div className="w-1/3 font-medium">{dept.name}</div>
-              <div className="w-1/5 text-center">{dept.headcount}</div>
-              <div className="w-1/5 text-center">${dept.avgSalary.toLocaleString()}</div>
-              <div className="w-1/5 text-center">{dept.efficiencyGain}%</div>
-              <div className="w-10">
-                <button 
-                  className="text-gray-400 hover:text-red-500 transition-colors"
-                  onClick={() => removeDepartment(dept.id)}
-                >
-                  <Icon name="trash" />
-                </button>
+          {departments.length > 0 ? (
+            departments.map((dept) => (
+              <div key={dept.id} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 rounded transition-colors">
+                <div className="w-1/3 font-medium">{dept.name}</div>
+                <div className="w-1/5 text-center">{dept.headcount}</div>
+                <div className="w-1/5 text-center">${dept.avgSalary.toLocaleString()}</div>
+                <div className="w-1/5 text-center">{dept.efficiencyGain}%</div>
+                <div className="w-10">
+                  <button 
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                    onClick={() => removeDepartment(dept.id)}
+                  >
+                    <Icon name="trash" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-          
-          {departments.length === 0 && (
-            <div className="py-4 text-center text-gray-500 bg-gray-50 rounded">
-              No departments defined. Add your first department above.
+            ))
+          ) : (
+            <div className="py-6 text-center bg-gray-50 rounded">
+              <div className="text-gray-500 mb-3">No departments defined</div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={autoPopulateDepartments}
+                className="bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100"
+              >
+                <Icon name="refresh-cw" className="mr-1 h-4 w-4" /> 
+                Auto-populate with industry standards
+              </Button>
             </div>
           )}
         </div>
