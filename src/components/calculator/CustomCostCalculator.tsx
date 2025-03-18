@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { calculateROI } from "@/services/calculatorService";
 import Icon from "@/components/Icon";
 
@@ -11,6 +12,7 @@ interface CostItem {
   id: string;
   name: string;
   amount: number;
+  frequency: "one-time" | "yearly";
 }
 
 interface CustomCostCalculatorProps {
@@ -25,15 +27,35 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   adoptionRate = 70
 }) => {
   const [costItems, setCostItems] = useState<CostItem[]>([
-    { id: '1', name: 'Software Licenses', amount: 10000 },
-    { id: '2', name: 'Implementation Services', amount: 15000 },
-    { id: '3', name: 'Training', amount: 5000 },
+    { id: '1', name: 'Software Licenses', amount: 10000, frequency: "yearly" },
+    { id: '2', name: 'Implementation Services', amount: 15000, frequency: "one-time" },
+    { id: '3', name: 'Training', amount: 5000, frequency: "one-time" },
   ]);
   const [newItemName, setNewItemName] = useState('');
   const [newItemAmount, setNewItemAmount] = useState<number>(0);
+  const [newItemFrequency, setNewItemFrequency] = useState<"one-time" | "yearly">("one-time");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const totalCost = costItems.reduce((sum, item) => sum + item.amount, 0);
+  // Calculate total cost considering one-time and recurring costs
+  const calculateTotalCost = () => {
+    let oneTimeCost = 0;
+    let yearlyCost = 0;
+    
+    costItems.forEach(item => {
+      if (item.frequency === "one-time") {
+        oneTimeCost += item.amount;
+      } else {
+        yearlyCost += item.amount;
+      }
+    });
+    
+    // For yearly costs, prorate based on time horizon
+    const yearlyAdjusted = yearlyCost * (timeHorizon / 12);
+    
+    return oneTimeCost + yearlyAdjusted;
+  };
+  
+  const totalCost = calculateTotalCost();
   
   // Apply time horizon and adoption rate adjustments consistent with the rest of the app
   const breakEvenThreshold = 4; // months below which ROI starts becoming negative
@@ -62,11 +84,13 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
       {
         id: Date.now().toString(),
         name: newItemName,
-        amount: newItemAmount || 0
+        amount: newItemAmount || 0,
+        frequency: newItemFrequency
       }
     ]);
     setNewItemName('');
     setNewItemAmount(0);
+    setNewItemFrequency("one-time");
   };
 
   const handleUpdateCost = (id: string, amount: number) => {
@@ -81,6 +105,14 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
     setCostItems(
       costItems.map(item => 
         item.id === id ? { ...item, name } : item
+      )
+    );
+  };
+  
+  const handleUpdateFrequency = (id: string, frequency: "one-time" | "yearly") => {
+    setCostItems(
+      costItems.map(item => 
+        item.id === id ? { ...item, frequency } : item
       )
     );
   };
@@ -141,6 +173,20 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                         className="text-right"
                       />
                     </div>
+                    <div className="w-28">
+                      <Select 
+                        value={item.frequency} 
+                        onValueChange={(value: "one-time" | "yearly") => handleUpdateFrequency(item.id, value)}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Select frequency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="one-time">One-time</SelectItem>
+                          <SelectItem value="yearly">Yearly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <Button 
                       variant="ghost" 
                       size="sm"
@@ -163,7 +209,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                     placeholder="New cost item"
                   />
                 </div>
-                <div className="w-28">
+                <div className="w-24">
                   <Label htmlFor="new-cost-amount" className="text-xs text-gray-500">Amount ($)</Label>
                   <Input 
                     id="new-cost-amount"
@@ -172,6 +218,21 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                     onChange={(e) => setNewItemAmount(Number(e.target.value))}
                     className="text-right"
                   />
+                </div>
+                <div className="w-28">
+                  <Label htmlFor="new-cost-frequency" className="text-xs text-gray-500">Frequency</Label>
+                  <Select 
+                    value={newItemFrequency} 
+                    onValueChange={(value: "one-time" | "yearly") => setNewItemFrequency(value)}
+                  >
+                    <SelectTrigger id="new-cost-frequency" className="h-9">
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="one-time">One-time</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button 
                   onClick={handleAddItem}
@@ -206,7 +267,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                   </span>
                 </div>
                 
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-2 border-b border-gray-200">
                   <span className="text-gray-600">Payback Period:</span>
                   <span className="font-bold text-indigo-600">
                     {timeHorizon <= breakEvenThreshold 
@@ -217,6 +278,21 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                       ? 'Less than 1 month'
                       : `${Math.ceil(paybackPeriodMonths)} months`}
                   </span>
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-gray-600">One-time costs:</span>
+                    <span className="font-medium text-gray-800">
+                      ${costItems.reduce((sum, item) => sum + (item.frequency === "one-time" ? item.amount : 0), 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-gray-600">Yearly recurring costs:</span>
+                    <span className="font-medium text-gray-800">
+                      ${costItems.reduce((sum, item) => sum + (item.frequency === "yearly" ? item.amount : 0), 0).toLocaleString()}/year
+                    </span>
+                  </div>
                 </div>
               </div>
               
