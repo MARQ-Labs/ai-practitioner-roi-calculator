@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 172 66% 39%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -30,24 +33,17 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 172 66% 39%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +92,67 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
+  html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .slider-thumb::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 rounded-full bg-teal-600 cursor-pointer transition-all duration-200 hover:ring-4 hover:ring-teal-200;
+  }
+  
+  .slider-thumb::-moz-range-thumb {
+    @apply w-5 h-5 rounded-full bg-teal-600 cursor-pointer border-none transition-all duration-200 hover:ring-4 hover:ring-teal-200;
+  }
+
+  .card-hover-effect {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .input-range {
+    @apply appearance-none bg-gray-200 h-2 rounded-lg w-full focus:outline-none;
+  }
+  
+  .input-range::-webkit-slider-thumb {
+    @apply appearance-none bg-teal-600 w-5 h-5 rounded-full cursor-pointer shadow-md hover:bg-teal-500 transition-all;
+  }
+  
+  .input-range::-moz-range-thumb {
+    @apply bg-teal-600 w-5 h-5 rounded-full cursor-pointer shadow-md border-none hover:bg-teal-500 transition-all;
+  }
+
+  .tab-button {
+    @apply flex items-center justify-center gap-1 py-3 px-2 rounded-md transition-all duration-200 hover:bg-white/80;
+  }
+  
+  .tab-button-active {
+    @apply bg-white shadow;
+  }
+}
+
+/* Page transition animations */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 400ms, transform 400ms;
+}
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
 }
