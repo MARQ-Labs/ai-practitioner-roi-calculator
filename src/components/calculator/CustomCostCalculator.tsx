@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
 import { Input } from "@/components/ui/input";
@@ -12,13 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { CostItem } from "@/models/calculator";
-import { formatCurrency } from "@/lib/utils";
-
-// Simple UUID generator function
-const generateId = (): string => {
-  return Math.random().toString(36).substring(2, 15) + 
-         Math.random().toString(36).substring(2, 15);
-};
+import { formatCurrency, generateUuid } from "@/lib/utils";
 
 interface CustomCostCalculatorProps {
   totalBenefit: number;
@@ -34,7 +27,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   onCostChange
 }) => {
   const [costItems, setCostItems] = useState<CostItem[]>([
-    { id: generateId(), name: "Implementation Cost", cost: 50000, type: "one-time" }
+    { id: generateUuid(), name: "Implementation Cost", cost: 50000, type: "one-time" }
   ]);
   
   // Calculate total cost based on all items
@@ -94,7 +87,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   const addCostItem = () => {
     setCostItems([
       ...costItems,
-      { id: generateId(), name: "New Cost Item", cost: 10000, type: "one-time" }
+      { id: generateUuid(), name: "New Cost Item", cost: 10000, type: "one-time" }
     ]);
   };
   
