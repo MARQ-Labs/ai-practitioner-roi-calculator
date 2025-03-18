@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,7 +35,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   const [newItemFrequency, setNewItemFrequency] = useState<"one-time" | "yearly">("one-time");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Calculate total cost considering one-time and recurring costs
+  // Calculate total cost considering one-time and recurring costs over the specified time horizon
   const calculateTotalCost = () => {
     let oneTimeCost = 0;
     let yearlyCost = 0;
@@ -49,8 +48,9 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
       }
     });
     
-    // For yearly costs, prorate based on time horizon
-    const yearlyAdjusted = yearlyCost * (timeHorizon / 12);
+    // For yearly costs, calculate based on time horizon (prorated for partial years)
+    const timeHorizonYears = timeHorizon / 12;
+    const yearlyAdjusted = yearlyCost * timeHorizonYears;
     
     return oneTimeCost + yearlyAdjusted;
   };
@@ -60,7 +60,6 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   // Apply time horizon and adoption rate adjustments consistent with the rest of the app
   const breakEvenThreshold = 4; // months below which ROI starts becoming negative
   const adoptionFactor = adoptionRate / 100;
-  const timeHorizonAdjustment = timeHorizon / 12;
   
   // Calculate benefit with time and adoption adjustments
   let adjustedBenefit = totalBenefit;
@@ -70,11 +69,31 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
     adjustedBenefit = totalBenefit * timeProgress * adoptionFactor * 0.5; // More aggressive reduction
   } else {
     // Normal benefit adjustment based on time horizon and adoption
-    adjustedBenefit = totalBenefit * timeHorizonAdjustment * adoptionFactor;
+    adjustedBenefit = totalBenefit * (timeHorizon / 12) * adoptionFactor;
   }
   
   const calculatedROI = calculateROI(totalCost, adjustedBenefit);
-  const paybackPeriodMonths = totalCost > 0 ? (totalCost / (adjustedBenefit / 12)) : 0;
+  
+  // Calculate payback period in months, accounting for one-time and recurring costs
+  const calculatePaybackPeriod = () => {
+    if (totalCost <= 0 || adjustedBenefit <= 0) return 0;
+    
+    const oneTimeCost = costItems.reduce((sum, item) => 
+      sum + (item.frequency === "one-time" ? item.amount : 0), 0);
+    
+    const monthlyCost = costItems.reduce((sum, item) => 
+      sum + (item.frequency === "yearly" ? item.amount / 12 : 0), 0);
+    
+    const monthlyBenefit = (adjustedBenefit / timeHorizon);
+    
+    // If monthly costs exceed benefits, payback is impossible
+    if (monthlyCost >= monthlyBenefit) return Infinity;
+    
+    // Otherwise, calculate how many months of net benefit are needed to cover one-time costs
+    return oneTimeCost / (monthlyBenefit - monthlyCost);
+  };
+  
+  const paybackPeriodMonths = calculatePaybackPeriod();
 
   const handleAddItem = () => {
     if (newItemName.trim() === '') return;
@@ -124,6 +143,15 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   const getRecommendationText = (roi: number) => {
     if (timeHorizon <= breakEvenThreshold)
       return "Initial investment phase. Consider extending time horizon to 6+ months for positive ROI.";
+    
+    // Check if recurring costs are high relative to benefits
+    const yearlyRecurringCosts = costItems.reduce((sum, item) => 
+      sum + (item.frequency === "yearly" ? item.amount : 0), 0);
+    const yearlyBenefits = totalBenefit * adoptionFactor;
+    
+    if (yearlyRecurringCosts > yearlyBenefits * 0.7) 
+      return "High recurring costs. Consider reducing yearly costs to improve long-term ROI.";
+    
     if (roi > 100) 
       return "Strong ROI potential. Consider accelerating implementation.";
     if (roi > 50)
@@ -274,6 +302,8 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                       ? 'Beyond time horizon'
                       : calculatedROI < 0
                       ? 'Beyond time horizon'
+                      : !isFinite(paybackPeriodMonths)
+                      ? 'Not achievable with current costs'
                       : paybackPeriodMonths < 1 
                       ? 'Less than 1 month'
                       : `${Math.ceil(paybackPeriodMonths)} months`}
@@ -291,6 +321,13 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
                     <span className="text-gray-600">Yearly recurring costs:</span>
                     <span className="font-medium text-gray-800">
                       ${costItems.reduce((sum, item) => sum + (item.frequency === "yearly" ? item.amount : 0), 0).toLocaleString()}/year
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-gray-600">Monthly cost breakdown:</span>
+                    <span className="font-medium text-gray-800">
+                      ${((costItems.reduce((sum, item) => sum + (item.frequency === "yearly" ? item.amount : 0), 0) / 12) + 
+                         (costItems.reduce((sum, item) => sum + (item.frequency === "one-time" ? item.amount : 0), 0) / timeHorizon)).toLocaleString()}/month
                     </span>
                   </div>
                 </div>

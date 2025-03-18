@@ -124,6 +124,14 @@ export const calculateTotalImpact = (
   return result;
 };
 
+/**
+ * Calculates the ROI (Return on Investment) percentage.
+ * 
+ * @param investment The total investment amount (including one-time and recurring costs)
+ * @param returnValue The expected return value
+ * @returns The calculated ROI as a percentage
+ */
 export const calculateROI = (investment: number, returnValue: number): number => {
+  if (investment <= 0) return 0; // Prevent division by zero
   return (returnValue - investment) / investment * 100;
 };
