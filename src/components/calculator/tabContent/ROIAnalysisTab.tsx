@@ -25,41 +25,35 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
 }) => {
   const [analysisView, setAnalysisView] = useState<"summary" | "timeline">("summary");
   
-  // Generate timeline data
+  // Get the correct departments for this industry
   const industryDepartments = industryData.industryDepartments[industry.id] || [];
+  
+  // Generate timeline data - ensure we're passing valid data
   const timelineData = generateTimelineData(
     industryDepartments,
     adoptionRate,
     timeHorizon,
-    customCost,
+    customCost || 50000, // Ensure we have a default cost if customCost is 0
     industry.id
   );
   
-  // Use the last point of timeline data to get the final financial impact
+  // Calculate financial impact from the timeline data
   const finalImpact = timelineData.length > 0 
     ? timelineData[timelineData.length - 1].financialImpact 
     : 0;
     
-  // Calculate ROI using the same method as in CustomCostCalculator and ImpactCards
-  const totalBenefit = industryDepartments.length > 0 
-    ? timelineData[timelineData.length - 1].cumulativeReturn + (customCost || calculateEstimatedInvestment(industryDepartments)) 
+  // Calculate total benefit - make sure we're using the last point of the timeline
+  const totalBenefit = timelineData.length > 0 
+    ? timelineData[timelineData.length - 1].cumulativeReturn + timelineData[0].investment
     : 0;
     
-  const calculatedROI = calculateROI(customCost || calculateEstimatedInvestment(industryDepartments), totalBenefit);
+  // Make sure we have a valid investment value
+  const investment = timelineData.length > 0 ? timelineData[0].investment : 50000;
   
-  // Function to estimate investment (copied from calculatorService.ts for consistency)
-  function calculateEstimatedInvestment(departments: any[]): number {
-    const totalHeadcount = departments.reduce((total, dept) => total + dept.headcount, 0);
-    const baseInvestment = Math.max(15000, totalHeadcount * 2000);
-    
-    if (totalHeadcount > 100) {
-      return baseInvestment * 0.8;
-    }
-    
-    return baseInvestment;
-  }
-    
-  // For leaders ROI, still show potential even during negative periods
+  // Calculate ROI consistently with other components
+  const calculatedROI = calculateROI(investment, totalBenefit);
+  
+  // For leaders ROI calculation
   const leaderROIValue = roiData.leadersROI 
     ? parseFloat(roiData.leadersROI.replace('%', '')) 
     : 0;
@@ -67,6 +61,16 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   const adjustedLeadersROI = calculatedROI < 0
     ? "Break-even at 4 months"
     : (leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(1) + "%";
+
+  // Add debug to help identify problems
+  console.log("ROI Analysis Tab Data:", {
+    industryId: industry.id,
+    departments: industryDepartments,
+    timelineData,
+    investment,
+    totalBenefit,
+    calculatedROI
+  });
 
   return (
     <div className="mt-4 animate-slide-in-right">
@@ -129,7 +133,11 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
             </div>
             
             <div className="mt-6">
-              <ROIChart industry={industry} timeHorizon={timeHorizon} adoptionRate={adoptionRate} />
+              <ROIChart 
+                industry={industry} 
+                timeHorizon={timeHorizon} 
+                adoptionRate={adoptionRate} 
+              />
             </div>
             
             <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -145,10 +153,16 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
           </TabsContent>
           
           <TabsContent value="timeline" className="mt-0">
-            <TimelineVisualization 
-              timelineData={timelineData}
-              customCost={customCost}
-            />
+            {timelineData.length > 0 ? (
+              <TimelineVisualization 
+                timelineData={timelineData}
+                customCost={customCost}
+              />
+            ) : (
+              <div className="p-6 text-center">
+                <p className="text-gray-500">No timeline data available. Please adjust your parameters.</p>
+              </div>
+            )}
           </TabsContent>
         </CardContent>
       </Card>
