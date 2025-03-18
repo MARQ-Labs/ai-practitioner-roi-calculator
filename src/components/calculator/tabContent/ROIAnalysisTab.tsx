@@ -28,12 +28,14 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Get the correct departments for this industry
   const industryDepartments = industryData.industryDepartments[industry.id] || [];
   
-  // Generate timeline data - ensure we're passing valid data
+  // Generate timeline data - always ensure we have a valid cost
+  const effectiveCost = customCost > 0 ? customCost : 50000; // Default to 50000 if customCost is 0
+  
   const timelineData = generateTimelineData(
     industryDepartments,
     adoptionRate,
     timeHorizon,
-    customCost || 50000, // Ensure we have a default cost if customCost is 0
+    effectiveCost,
     industry.id
   );
   
@@ -48,7 +50,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     : 0;
     
   // Make sure we have a valid investment value
-  const investment = timelineData.length > 0 ? timelineData[0].investment : 50000;
+  const investment = timelineData.length > 0 ? timelineData[0].investment : effectiveCost;
   
   // Calculate ROI consistently with other components
   const calculatedROI = calculateROI(investment, totalBenefit);
@@ -156,7 +158,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
             {timelineData.length > 0 ? (
               <TimelineVisualization 
                 timelineData={timelineData}
-                customCost={customCost}
+                customCost={effectiveCost}
               />
             ) : (
               <div className="p-6 text-center">
