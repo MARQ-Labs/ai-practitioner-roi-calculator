@@ -1,12 +1,14 @@
-
 import React from "react";
-import { Tabs } from "@/components/Tabs";
-import { IconName } from "@/components/Icon";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { 
+  Department, 
+  Industry, 
+  ROIData 
+} from "@/models/calculator";
 import DepartmentImpactTab from "./tabContent/DepartmentImpactTab";
-import IndustryInsightsTab from "./tabContent/IndustryInsightsTab";
 import EfficiencyGainsTab from "./tabContent/EfficiencyGainsTab";
 import ROIAnalysisTab from "./tabContent/ROIAnalysisTab";
-import { Department, Industry } from "@/models/calculator";
+import IndustryInsightsTab from "./tabContent/IndustryInsightsTab";
 
 interface TabNavigationProps {
   activeTab: string;
@@ -16,7 +18,7 @@ interface TabNavigationProps {
   timeHorizon: number;
   industryId: string;
   industry: Industry;
-  roiData: any;
+  roiData: ROIData;
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({
@@ -27,65 +29,52 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   timeHorizon,
   industryId,
   industry,
-  roiData,
+  roiData
 }) => {
-  const tabs = [
-    { id: "capacity", label: "Department Impact", icon: "users" as IconName },
-    { id: "insights", label: "Industry Insights", icon: "lightbulb" as IconName },
-    { id: "efficiency", label: "Efficiency Gains", icon: "layers" as IconName },
-    { id: "roi", label: "ROI Analysis", icon: "trendingUp" as IconName }
-  ];
-
   return (
-    <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Explore Different Perspectives</h2>
-        <p className="text-gray-600">Click the tabs below to see different views of AI's impact</p>
-      </div>
-      
-      <Tabs 
-        tabs={tabs} 
-        activeTab={activeTab} 
-        onChange={setActiveTab} 
-      />
-      
-      {/* Department Impact Tab Content */}
-      {activeTab === "capacity" && (
-        <DepartmentImpactTab
-          departments={departments}
-          adoptionRate={adoptionRate}
-          timeHorizon={timeHorizon}
-          industryId={industryId}
-          industryName={industry.name}
-        />
-      )}
-
-      {/* Industry Insights Tab Content */}
-      {activeTab === "insights" && (
-        <IndustryInsightsTab
-          industry={industry}
-          industryId={industryId}
-        />
-      )}
-      
-      {/* Efficiency Gains Tab Content */}
-      {activeTab === "efficiency" && (
-        <EfficiencyGainsTab
-          departments={departments}
-          adoptionRate={adoptionRate}
-          timeHorizon={timeHorizon}
-          industryId={industryId}
-          industryName={industry.name}
-        />
-      )}
-      
-      {/* ROI Analysis Tab Content */}
-      {activeTab === "roi" && (
-        <ROIAnalysisTab
-          industry={industry}
-          roiData={roiData}
-        />
-      )}
+    <div className="mb-8">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="bg-white rounded-lg shadow-sm flex justify-between p-1">
+          <TabsTrigger value="capacity" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
+            Capacity
+          </TabsTrigger>
+          <TabsTrigger value="efficiency" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
+            Efficiency
+          </TabsTrigger>
+          <TabsTrigger value="roi" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
+            ROI Analysis
+          </TabsTrigger>
+          <TabsTrigger value="industry" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
+            Industry Insights
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="capacity" className="animate-slide-in-right">
+          <DepartmentImpactTab 
+            departments={departments} 
+            adoptionRate={adoptionRate} 
+            timeHorizon={timeHorizon}
+            industryId={industryId}
+          />
+        </TabsContent>
+        
+        <TabsContent value="efficiency" className="animate-slide-in-right">
+          <EfficiencyGainsTab industry={industry} />
+        </TabsContent>
+        
+        <TabsContent value="roi" className="animate-slide-in-right">
+          <ROIAnalysisTab 
+            industry={industry} 
+            roiData={roiData} 
+            timeHorizon={timeHorizon}
+            adoptionRate={adoptionRate}
+          />
+        </TabsContent>
+        
+        <TabsContent value="industry" className="animate-slide-in-right">
+          <IndustryInsightsTab industryId={industryId} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

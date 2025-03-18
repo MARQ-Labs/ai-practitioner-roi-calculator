@@ -7,20 +7,42 @@ import { Industry } from "@/models/calculator";
 interface ROIAnalysisTabProps {
   industry: Industry;
   roiData: any;
-  timeHorizon?: number;  // Add timeHorizon as an optional prop
+  timeHorizon?: number;
+  adoptionRate?: number;
 }
 
 const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({ 
   industry, 
   roiData,
-  timeHorizon = 12  // Default to 12 months if not provided
+  timeHorizon = 12,
+  adoptionRate = 70
 }) => {
-  // Adjust ROI values based on time horizon
+  // Adjust ROI values based on time horizon and adoption rate
   const timeHorizonAdjustment = timeHorizon / 12;
-  const adjustedIndustryROI = industry.overallROI ? (industry.overallROI * timeHorizonAdjustment).toFixed(1) : "0";
-  const adjustedLeadersROI = roiData.leadersROI ? 
-    parseFloat(roiData.leadersROI) * timeHorizonAdjustment + "%" : 
-    roiData.leadersROI;
+  const adoptionFactor = adoptionRate / 100;
+  const breakEvenThreshold = 4; // Consistent with other components
+  
+  // For very short horizons, adjust ROI to potentially show negative values
+  const getTimeAdjustedROI = (roi: number) => {
+    if (timeHorizon <= breakEvenThreshold) {
+      // Calculate negative ROI for very short time periods
+      return -25 + ((timeHorizon / breakEvenThreshold) * 25 * adoptionFactor);
+    }
+    return roi * timeHorizonAdjustment * adoptionFactor;
+  };
+  
+  const adjustedIndustryROI = industry.overallROI 
+    ? getTimeAdjustedROI(industry.overallROI).toFixed(1) 
+    : "0";
+    
+  // For leaders ROI, still show potential even during negative periods
+  const leaderROIValue = roiData.leadersROI 
+    ? parseFloat(roiData.leadersROI.replace('%', '')) 
+    : 0;
+    
+  const adjustedLeadersROI = timeHorizon <= breakEvenThreshold
+    ? "Break-even at " + (breakEvenThreshold) + " months"
+    : (leaderROIValue * timeHorizonAdjustment * adoptionFactor).toFixed(1) + "%";
 
   return (
     <div className="mt-4 animate-slide-in-right">
@@ -38,7 +60,9 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-600">{timeHorizon}-Month Industry Avg ROI:</span>
-                  <span className="font-bold text-teal-700">{adjustedIndustryROI}%</span>
+                  <span className={`font-bold ${parseFloat(adjustedIndustryROI) < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
+                    {adjustedIndustryROI}%
+                  </span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-600">{timeHorizon}-Month AI Leaders ROI:</span>
@@ -72,7 +96,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
           </div>
           
           <div className="mt-6">
-            <ROIChart industry={industry} timeHorizon={timeHorizon} />
+            <ROIChart industry={industry} timeHorizon={timeHorizon} adoptionRate={adoptionRate} />
           </div>
           
           <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -81,7 +105,8 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
               The ROI data is based on industry research from 2023-2024 across multiple sectors.
               The calculations include direct cost savings, productivity improvements, and new 
               revenue opportunities enabled by AI. All values are adjusted based on the selected 
-              time horizon of {timeHorizon} months to provide an accurate projection.
+              time horizon of {timeHorizon} months and organization-wide adoption rate of {adoptionRate}%
+              to provide an accurate projection.
             </p>
           </div>
         </CardContent>

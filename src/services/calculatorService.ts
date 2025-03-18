@@ -25,8 +25,9 @@ export const calculateDepartmentImpact = (
   const hourlyRate = dept.avgSalary / WORK_HOURS_PER_YEAR;
   const fullImpact = totalHoursSaved * hourlyRate;
   
-  // Apply adoption rate
+  // Apply adoption rate - lower adoption rates should have stronger negative effect on ROI
   const adoptionImpact = fullImpact * (adoptionRate / 100);
+  const adoptionFactor = adoptionRate / 100; // will be used for ROI calculation
   
   // Find the closest time period in our curve
   const timeKeys = Object.keys(TIME_ADOPTION_CURVE).map(Number);
@@ -43,11 +44,20 @@ export const calculateDepartmentImpact = (
   // Get department-specific ROI if available
   const baseRoi = getDepartmentROI(industryId, dept.name);
   
-  // Adjust ROI based on time horizon (shorter time horizons result in lower ROI)
-  const adjustedRoi = baseRoi * (timeHorizon / 12);
+  // More aggressive ROI adjustment for short time horizons
+  // Should start negative at 3 months and gradually become positive
+  const breakEvenThreshold = 4; // months below which ROI is negative
   
-  // ROI can be negative for short time horizons
-  const timeBasedRoi = adjustedRoi - (6 / timeHorizon * 10); // Subtract more for shorter timeframes
+  let timeBasedRoi;
+  if (timeHorizon <= breakEvenThreshold) {
+    // Stronger negative ROI for very short time periods
+    timeBasedRoi = -25 + ((timeHorizon / breakEvenThreshold) * 25);
+    // Apply adoption rate impact - lower adoption makes ROI more negative
+    timeBasedRoi = timeBasedRoi * adoptionFactor;
+  } else {
+    // For longer timeframes, ROI gradually improves
+    timeBasedRoi = baseRoi * (timeHorizon / 12) * adoptionFactor;
+  }
   
   return {
     financialImpact: adoptionImpact * timeFactor,
@@ -91,14 +101,25 @@ export const calculateTotalImpact = (
   // Calculate the average ROI across all departments
   result.roi = result.roi / departments.length;
   
-  // Further adjust the ROI based on the time horizon for total impact
-  // New formula: Lower or negative ROI for very short time periods
-  // For very short horizons (e.g., 1-2 months), ROI should be negative
-  const baseThreshold = 3; // months below which ROI starts becoming negative
-  const timeAdjustment = (timeHorizon - baseThreshold) / 9; // normalized adjustment factor
+  // Further adjust the total ROI based on adoption rate and time horizon
+  const breakEvenThreshold = 4; // consistent with departmentImpact
   
-  // Apply a time-based adjustment that can result in negative values for very short time horizons
-  result.roi = result.roi * timeAdjustment;
+  if (timeHorizon <= breakEvenThreshold) {
+    // At 3 months with low adoption, ROI should be strongly negative
+    const adoptionImpact = (adoptionRate - 100) / 100; // negative impact for less than 100% adoption
+    const baseNegativeRoi = -30; // starting point for very short horizons
+    
+    // Adjust base negative ROI based on time progression toward break-even
+    const timeProgress = timeHorizon / breakEvenThreshold;
+    result.roi = baseNegativeRoi + (timeProgress * 30);
+    
+    // Apply adoption impact - lower adoption makes negative ROI worse
+    result.roi = result.roi * (1 + (adoptionImpact * 0.5));
+  } else {
+    // For longer timeframes, ROI improves gradually with time and adoption
+    const adoptionFactor = adoptionRate / 100;
+    result.roi = result.roi * adoptionFactor * (timeHorizon / 12);
+  }
 
   return result;
 };
