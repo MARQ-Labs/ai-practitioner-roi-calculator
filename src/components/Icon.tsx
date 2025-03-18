@@ -11,7 +11,7 @@ import {
   Plus 
 } from "lucide-react";
 
-type IconName = "users" | "chart" | "clock" | "lightbulb" | "layers" | "edit" | "trash" | "plus";
+export type IconName = "users" | "chart" | "clock" | "lightbulb" | "layers" | "edit" | "trash" | "plus";
 
 interface IconProps {
   name: IconName;

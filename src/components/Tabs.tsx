@@ -2,11 +2,12 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import Icon from "./Icon";
+import { type IconName } from "./Icon"; // Import the IconName type
 
 interface TabProps {
   id: string;
   label: string;
-  icon: string;
+  icon: IconName; // Change from string to IconName
   isActive: boolean;
   onClick: (id: string) => void;
 }
@@ -15,7 +16,7 @@ interface TabsProps {
   tabs: Array<{
     id: string;
     label: string;
-    icon: string;
+    icon: IconName; // Change from string to IconName
   }>;
   activeTab: string;
   onChange: (id: string) => void;
