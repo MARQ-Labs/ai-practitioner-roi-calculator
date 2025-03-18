@@ -11,7 +11,7 @@ interface ImpactCardsProps {
 }
 
 const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, leaderROI }) => {
-  // Calculate annualized ROI
+  // Use the time-adjusted ROI from totalImpact, fallback to industry average if needed
   const calculatedROI = totalImpact.roi || parseFloat(industryROI);
   
   return (
@@ -83,7 +83,7 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, lea
             {calculatedROI.toFixed(1)}%
           </div>
           <p className="text-sm text-green-700">
-            Projected return based on impact calculations
+            Projected {totalImpact.roi ? `${Math.round(totalImpact.roi / 12)}-month` : ""} return on AI investment
           </p>
           <div className="text-xs text-green-600 mt-4 flex items-center">
             <span className="font-medium">Industry benchmark:</span>

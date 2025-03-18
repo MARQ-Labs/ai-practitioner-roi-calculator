@@ -41,14 +41,17 @@ export const calculateDepartmentImpact = (
   const timeFactor = TIME_ADOPTION_CURVE[closestTime] || 0.9;
   
   // Get department-specific ROI if available
-  const roi = getDepartmentROI(industryId, dept.name);
+  const baseRoi = getDepartmentROI(industryId, dept.name);
+  
+  // Adjust ROI based on time horizon (shorter time horizons result in lower ROI)
+  const adjustedRoi = baseRoi * (timeHorizon / 12);
   
   return {
     financialImpact: adoptionImpact * timeFactor,
     hoursSaved: totalHoursSaved * (adoptionRate / 100) * timeFactor,
     fteEquivalent: (totalHoursSaved * (adoptionRate / 100) * timeFactor) / WORK_HOURS_PER_YEAR,
     headcount: dept.headcount,
-    roi: roi
+    roi: adjustedRoi
   };
 };
 
@@ -66,6 +69,11 @@ export const calculateTotalImpact = (
     roi: 0
   };
 
+  // If there are no departments, return zeros
+  if (departments.length === 0) {
+    return initialValue;
+  }
+
   const result = departments.reduce((acc, dept) => {
     const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon, industryId);
     return {
@@ -73,9 +81,16 @@ export const calculateTotalImpact = (
       hoursSaved: acc.hoursSaved + impact.hoursSaved,
       fteEquivalent: acc.fteEquivalent + impact.fteEquivalent,
       headcount: acc.headcount + dept.headcount,
-      roi: (acc.roi || 0) + (impact.roi || 0) / departments.length // average ROI
+      roi: acc.roi + (impact.roi || 0)
     };
   }, initialValue);
+
+  // Calculate the average ROI across all departments
+  result.roi = result.roi / departments.length;
+  
+  // Further adjust the ROI based on the time horizon for total impact
+  // This ensures the ROI increases proportionally with longer time horizons
+  result.roi = result.roi * (timeHorizon / 12);
 
   return result;
 };
