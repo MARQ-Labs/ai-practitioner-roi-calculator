@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
@@ -61,7 +60,7 @@ const AIPotentialCalculator: React.FC = () => {
   const handleDepartmentsChange = (departments: Department[]) => {
     setCustomDepartments(departments);
   };
-
+  
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
       {/* Header */}
@@ -89,8 +88,10 @@ const AIPotentialCalculator: React.FC = () => {
         setTimeHorizon={setTimeHorizon}
       />
       
-      {/* Custom Cost Calculator - Moved above Impact Cards */}
-      <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
+      {/* Custom Cost Calculator - Moved above Impact Cards with spacing */}
+      <div className="mb-8">
+        <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
+      </div>
       
       {/* Impact Cards */}
       <ImpactCards 
