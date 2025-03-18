@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import ROIChart from "@/components/ROIChart";
 import { Industry, TimelinePoint } from "@/models/calculator";
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TimelineVisualization from "@/components/TimelineVisualization";
 import { generateTimelineData, calculateROI } from "@/services/calculatorService";
 import { industryData } from "@/data/industryData";
+import { useToast } from "@/hooks/use-toast";
 
 interface ROIAnalysisTabProps {
   industry: Industry;
@@ -24,6 +25,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   customCost = 0
 }) => {
   const [analysisView, setAnalysisView] = useState<"summary" | "timeline">("summary");
+  const { toast } = useToast();
   
   // Get the correct departments for this industry
   const industryDepartments = industryData.industryDepartments[industry.id] || [];
@@ -31,13 +33,19 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Generate timeline data - always ensure we have a valid cost
   const effectiveCost = customCost > 0 ? customCost : 50000; // Default to 50000 if customCost is 0
   
-  const timelineData = generateTimelineData(
-    industryDepartments,
-    adoptionRate,
-    timeHorizon,
-    effectiveCost,
-    industry.id
-  );
+  // Check if we have departments before generating timeline data
+  const hasValidDepartments = industryDepartments && industryDepartments.length > 0;
+  
+  // Generate timeline data only if we have departments
+  const timelineData = hasValidDepartments
+    ? generateTimelineData(
+        industryDepartments,
+        adoptionRate,
+        timeHorizon,
+        effectiveCost,
+        industry.id
+      )
+    : [];
   
   // Calculate financial impact from the timeline data
   const finalImpact = timelineData.length > 0 
@@ -71,8 +79,26 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     timelineData,
     investment,
     totalBenefit,
-    calculatedROI
+    calculatedROI,
+    hasValidDepartments
   });
+
+  // Show toast when there's an issue with timeline data
+  useEffect(() => {
+    if (!hasValidDepartments) {
+      toast({
+        title: "No department data available",
+        description: "Please add departments to see ROI analysis",
+        variant: "destructive"
+      });
+    } else if (timelineData.length === 0) {
+      toast({
+        title: "Timeline generation failed",
+        description: "Could not generate ROI timeline data",
+        variant: "destructive"
+      });
+    }
+  }, [hasValidDepartments, timelineData.length, toast]);
 
   return (
     <div className="mt-4 animate-slide-in-right">
@@ -161,8 +187,9 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                 customCost={effectiveCost}
               />
             ) : (
-              <div className="p-6 text-center">
-                <p className="text-gray-500">No timeline data available. Please adjust your parameters.</p>
+              <div className="p-6 text-center bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-gray-500 mb-2">No timeline data available.</p>
+                <p className="text-sm text-gray-400">Try adjusting your parameters or ensure departments are properly configured.</p>
               </div>
             )}
           </TabsContent>
