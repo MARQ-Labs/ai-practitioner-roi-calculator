@@ -341,14 +341,16 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
                       <button 
                         className="text-gray-400 hover:text-green-500 transition-colors"
                         onClick={saveEditing}
+                        title="Save"
                       >
-                        <Icon name="edit" />
+                        <Icon name="check" />
                       </button>
                       <button 
                         className="text-gray-400 hover:text-red-500 transition-colors"
                         onClick={cancelEditing}
+                        title="Cancel"
                       >
-                        <Icon name="trash" />
+                        <Icon name="x" />
                       </button>
                     </div>
                   </>
@@ -363,12 +365,14 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
                       <button 
                         className="text-gray-400 hover:text-blue-500 transition-colors"
                         onClick={() => startEditing(dept)}
+                        title="Edit"
                       >
                         <Icon name="edit" />
                       </button>
                       <button 
                         className="text-gray-400 hover:text-red-500 transition-colors"
                         onClick={() => removeDepartment(dept.id)}
+                        title="Delete"
                       >
                         <Icon name="trash" />
                       </button>
