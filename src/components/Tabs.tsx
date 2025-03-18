@@ -7,7 +7,7 @@ import { type IconName } from "./Icon"; // Import the IconName type
 interface TabProps {
   id: string;
   label: string;
-  icon: IconName; // Change from string to IconName
+  icon: IconName; // Using IconName type
   isActive: boolean;
   onClick: (id: string) => void;
 }
@@ -16,7 +16,7 @@ interface TabsProps {
   tabs: Array<{
     id: string;
     label: string;
-    icon: IconName; // Change from string to IconName
+    icon: IconName; // Using IconName type
   }>;
   activeTab: string;
   onChange: (id: string) => void;
@@ -42,7 +42,7 @@ export const Tab: React.FC<TabProps> = ({ id, label, icon, isActive, onClick }) 
 
 export const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onChange, className }) => {
   return (
-    <div className={cn("grid grid-cols-3 bg-gray-100 p-1 rounded-lg", className)}>
+    <div className={cn("grid grid-cols-4 bg-gray-100 p-1 rounded-lg", className)}>
       {tabs.map((tab) => (
         <Tab
           key={tab.id}

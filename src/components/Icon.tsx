@@ -8,10 +8,12 @@ import {
   Layers, 
   Edit, 
   Trash2, 
-  Plus 
+  Plus,
+  TrendingUp,
+  LineChart
 } from "lucide-react";
 
-export type IconName = "users" | "chart" | "clock" | "lightbulb" | "layers" | "edit" | "trash" | "plus";
+export type IconName = "users" | "chart" | "clock" | "lightbulb" | "layers" | "edit" | "trash" | "plus" | "trendingUp" | "lineChart";
 
 interface IconProps {
   name: IconName;
@@ -28,7 +30,9 @@ const Icon: React.FC<IconProps> = ({ name, className = "", size = 24 }) => {
     layers: <Layers size={size} className={className} />,
     edit: <Edit size={size} className={className} />,
     trash: <Trash2 size={size} className={className} />,
-    plus: <Plus size={size} className={className} />
+    plus: <Plus size={size} className={className} />,
+    trendingUp: <TrendingUp size={size} className={className} />,
+    lineChart: <LineChart size={size} className={className} />
   };
   
   return iconMap[name] || <span className={className}>{name}</span>;

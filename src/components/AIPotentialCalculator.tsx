@@ -10,37 +10,42 @@ import Slider from "@/components/Slider";
 import { Tabs } from "@/components/Tabs";
 import Icon from "@/components/Icon";
 import DepartmentEditor from "@/components/DepartmentEditor";
+import ROIChart from "@/components/ROIChart";
 import { industryData, getIndustryUseCases, getIndustryROIData } from "@/data/industryData";
 import { calculateTotalImpact, calculateDepartmentImpact } from "@/services/calculatorService";
 import { useToast } from "@/hooks/use-toast";
-import { Department } from "@/models/calculator";
+import { Department, IconName } from "@/models/calculator";
 
 const AIPotentialCalculator: React.FC = () => {
   // Basic state
   const [adoptionRate, setAdoptionRate] = useState(70);
   const [timeHorizon, setTimeHorizon] = useState(12);
   const [activeTab, setActiveTab] = useState("capacity");
-  const [selectedIndustry, setSelectedIndustry] = useState("tourism");
+  const [selectedIndustry, setSelectedIndustry] = useState("technology");
   const [customDepartments, setCustomDepartments] = useState<Department[]>([]);
   const { toast } = useToast();
   
   // Get current industry data
-  const currentIndustry = industryData.industries[selectedIndustry] || industryData.industries.tourism;
-  const industryDepartments = industryData.industryDepartments[selectedIndustry] || industryData.industryDepartments.tourism;
+  const currentIndustry = industryData.industries[selectedIndustry] || industryData.industries.technology;
+  const industryDepartments = industryData.industryDepartments[selectedIndustry] || industryData.industryDepartments.technology;
   
   // Use custom departments if they exist, otherwise use industry defaults
   const currentDepartments = customDepartments.length > 0 
     ? customDepartments 
     : industryDepartments;
   
+  // Get ROI data
+  const roiData = getIndustryROIData(selectedIndustry);
+  
   // Calculate total impact
-  const totalImpact = calculateTotalImpact(currentDepartments, adoptionRate, timeHorizon);
+  const totalImpact = calculateTotalImpact(currentDepartments, adoptionRate, timeHorizon, selectedIndustry);
 
   // Tabs configuration
   const tabs = [
-    { id: "capacity", label: "Department Impact", icon: "users" as const },
-    { id: "insights", label: "Industry Insights", icon: "lightbulb" as const },
-    { id: "efficiency", label: "Efficiency Gains", icon: "layers" as const }
+    { id: "capacity", label: "Department Impact", icon: "users" as IconName },
+    { id: "insights", label: "Industry Insights", icon: "lightbulb" as IconName },
+    { id: "efficiency", label: "Efficiency Gains", icon: "layers" as IconName },
+    { id: "roi", label: "ROI Analysis", icon: "trendingUp" as IconName }
   ];
 
   // Reset custom departments when industry changes
@@ -73,9 +78,9 @@ const AIPotentialCalculator: React.FC = () => {
       <div className="mb-6 animate-fade-in-up">
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-teal-800 mb-2">AI Capacity Calculator</h1>
+            <h1 className="text-3xl font-bold text-teal-800 mb-2">AI Capacity & ROI Calculator</h1>
             <p className="text-gray-600">
-              See how strategic AI adoption creates additional team capacity for your organization
+              See how strategic AI adoption creates additional team capacity and ROI for your organization
             </p>
           </div>
           <div className="md:w-1/3">
@@ -85,11 +90,17 @@ const AIPotentialCalculator: React.FC = () => {
               value={selectedIndustry}
               onChange={(e) => handleIndustryChange(e.target.value)}
             >
-              <option value="tourism">Tourism & Hospitality</option>
+              <option value="technology">Information & Communication Technology</option>
+              <option value="manufacturing">Manufacturing</option>
               <option value="finance">Financial Services</option>
               <option value="healthcare">Healthcare</option>
-              <option value="retail">Retail</option>
-              <option value="technology">Technology</option>
+              <option value="retail">Retail & Consumer Goods</option>
+              <option value="media">Media & Telecommunications</option>
+              <option value="professional">Professional Services</option>
+              <option value="energy">Energy & Utilities</option>
+              <option value="logistics">Transportation & Logistics</option>
+              <option value="insurance">Insurance</option>
+              <option value="tourism">Tourism & Hospitality</option>
             </select>
           </div>
         </div>
@@ -99,6 +110,14 @@ const AIPotentialCalculator: React.FC = () => {
             <div className="flex-1">
               <h2 className="font-semibold text-teal-800">{currentIndustry.name}</h2>
               <p className="text-sm text-teal-600">{currentIndustry.description}</p>
+              <div className="mt-2 text-sm text-teal-700">
+                <span className="font-medium">Industry Average ROI: </span>
+                <span className="font-bold">{currentIndustry.overallROI}%</span>
+                <span className="ml-4 font-medium">AI Leaders ROI: </span>
+                <span className="font-bold">{roiData.leadersROI}</span>
+                <span className="ml-4 font-medium">Maturity Timeline: </span>
+                <span className="font-bold">{roiData.maturityTimeline}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -187,7 +206,7 @@ const AIPotentialCalculator: React.FC = () => {
       </div>
       
       {/* Impact Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card className="bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.15s" }}>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-4">
@@ -244,6 +263,25 @@ const AIPotentialCalculator: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+        
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.45s" }}>
+          <CardContent className="pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-green-800 font-medium">Return on Investment</h3>
+              <Icon name="trendingUp" className="text-green-600" size={28} />
+            </div>
+            <div className="text-3xl font-bold text-green-800 mb-1">
+              {currentIndustry.overallROI}%
+            </div>
+            <p className="text-sm text-green-700">
+              Industry average AI investment return
+            </p>
+            <div className="text-xs text-green-600 mt-4 flex items-center">
+              <span className="font-medium">AI Leaders:</span>
+              <span className="ml-1">{roiData.leadersROI} for mature implementations</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Tab Navigation */}
@@ -271,7 +309,7 @@ const AIPotentialCalculator: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {currentDepartments.map((dept) => {
-                  const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon);
+                  const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon, selectedIndustry);
                   
                   return (
                     <div key={dept.id} className="border-l-4 border-blue-400 pl-4 py-2 transition-all duration-300 hover:bg-blue-50 rounded-r-md">
@@ -279,7 +317,10 @@ const AIPotentialCalculator: React.FC = () => {
                         <h3 className="font-semibold">{dept.name}</h3>
                         <span className="font-bold text-teal-700">{impact.fteEquivalent.toFixed(1)} FTEs</span>
                       </div>
-                      <p className="text-sm text-gray-600">Department details:</p>
+                      <div className="flex justify-between">
+                        <p className="text-sm text-gray-600">Department details:</p>
+                        {impact.roi && <span className="text-sm font-medium text-green-600">ROI: {impact.roi}%</span>}
+                      </div>
                       <ul className="text-sm list-disc pl-5 mt-1">
                         <li>Staff: {dept.headcount} team members</li>
                         <li>Avg. Salary: ${dept.avgSalary.toLocaleString()}</li>
@@ -383,7 +424,7 @@ const AIPotentialCalculator: React.FC = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {currentDepartments.map((dept) => {
-                        const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon);
+                        const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon, selectedIndustry);
                         const weeklyHoursSaved = impact.hoursSaved / 52;
                         
                         return (
@@ -421,10 +462,78 @@ const AIPotentialCalculator: React.FC = () => {
             </Card>
           </div>
         )}
+        
+        {/* ROI Analysis Tab Content - NEW */}
+        {activeTab === "roi" && (
+          <div className="mt-4 animate-slide-in-right">
+            <Card>
+              <CardHeader>
+                <CardTitle>ROI Analysis for {currentIndustry.name}</CardTitle>
+                <CardDescription>
+                  Industry-specific return on investment data from AI implementation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 className="font-semibold text-lg mb-2">ROI Key Metrics</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600">Industry Average ROI:</span>
+                        <span className="font-bold text-teal-700">{currentIndustry.overallROI}%</span>
+                      </div>
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600">AI Leaders ROI:</span>
+                        <span className="font-bold text-teal-700">{roiData.leadersROI}</span>
+                      </div>
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600">Generative AI Multiplier:</span>
+                        <span className="font-bold text-teal-700">3.7x</span>
+                      </div>
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600">Time to Value:</span>
+                        <span className="font-bold text-teal-700">{roiData.timeToValue}</span>
+                      </div>
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-gray-600">Maturity Timeline:</span>
+                        <span className="font-bold text-teal-700">{roiData.maturityTimeline}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 className="font-semibold text-lg mb-2">Implementation Success Factors</h3>
+                    <ul className="list-disc pl-5 space-y-1 text-gray-600">
+                      <li>Allocate at least 5% of total budget to AI initiatives</li>
+                      <li>Ensure high data quality (accuracy currently at 54.6%)</li>
+                      <li>Implement across multiple departments simultaneously</li>
+                      <li>Secure executive leadership involvement in governance</li>
+                      <li>Plan for {roiData.maturityTimeline} to reach full maturity</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="mt-6">
+                  <ROIChart industry={currentIndustry} />
+                </div>
+                
+                <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h3 className="font-semibold text-gray-800 mb-2">ROI Calculation Methodology</h3>
+                  <p className="text-sm text-gray-600">
+                    The ROI data is based on industry research from 2023-2024 across multiple sectors.
+                    The calculations include direct cost savings, productivity improvements, and new 
+                    revenue opportunities enabled by AI. The maturity timeline considers implementation, 
+                    training, and adoption phases.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
       
       <footer className="text-center text-sm text-gray-500 mt-8 pt-4 border-t">
-        <p>AI Capacity Calculator — Data based on industry research and implementation benchmarks</p>
+        <p>AI Capacity & ROI Calculator — Data based on industry research and implementation benchmarks 2023-2024</p>
       </footer>
     </div>
   );
