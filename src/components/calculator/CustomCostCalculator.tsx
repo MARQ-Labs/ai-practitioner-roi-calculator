@@ -12,7 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { CostItem } from "@/models/calculator";
-import { v4 as uuidv4 } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
+
+// Simple UUID generator function
+const generateId = (): string => {
+  return Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15);
+};
 
 interface CustomCostCalculatorProps {
   totalBenefit: number;
@@ -28,7 +34,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   onCostChange
 }) => {
   const [costItems, setCostItems] = useState<CostItem[]>([
-    { id: uuidv4(), name: "Implementation Cost", cost: 50000, type: "one-time" }
+    { id: generateId(), name: "Implementation Cost", cost: 50000, type: "one-time" }
   ]);
   
   // Calculate total cost based on all items
@@ -88,7 +94,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   const addCostItem = () => {
     setCostItems([
       ...costItems,
-      { id: uuidv4(), name: "New Cost Item", cost: 10000, type: "one-time" }
+      { id: generateId(), name: "New Cost Item", cost: 10000, type: "one-time" }
     ]);
   };
   

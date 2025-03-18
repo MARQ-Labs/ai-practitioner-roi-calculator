@@ -16,3 +16,11 @@ export function formatCurrency(value: number, locale = 'en-US', currency = 'USD'
     maximumFractionDigits: 0
   }).format(value);
 }
+
+/**
+ * Generate a simple UUID
+ */
+export function generateUuid(): string {
+  return Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15);
+}
