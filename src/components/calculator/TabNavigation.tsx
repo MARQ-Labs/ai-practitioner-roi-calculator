@@ -20,6 +20,7 @@ interface TabNavigationProps {
   industryId: string;
   industry: Industry;
   roiData: ROIData;
+  customCost?: number;
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({
@@ -30,7 +31,8 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   timeHorizon,
   industryId,
   industry,
-  roiData
+  roiData,
+  customCost
 }) => {
   return (
     <div className="mb-8">
@@ -76,6 +78,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             roiData={roiData} 
             timeHorizon={timeHorizon}
             adoptionRate={adoptionRate}
+            customCost={customCost}
           />
         </TabsContent>
         

@@ -21,6 +21,7 @@ const AIPotentialCalculator: React.FC = () => {
   const [activeTab, setActiveTab] = useState("capacity");
   const [selectedIndustry, setSelectedIndustry] = useState("technology");
   const [customDepartments, setCustomDepartments] = useState<Department[]>([]);
+  const [customCost, setCustomCost] = useState<number>(50000);
   const { toast } = useToast();
   
   // Get current industry data
@@ -62,6 +63,11 @@ const AIPotentialCalculator: React.FC = () => {
     setCustomDepartments(departments);
   };
   
+  // Handle custom cost change
+  const handleCustomCostChange = (cost: number) => {
+    setCustomCost(cost);
+  };
+  
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
       {/* Header */}
@@ -95,6 +101,7 @@ const AIPotentialCalculator: React.FC = () => {
           totalBenefit={totalImpact.financialImpact} 
           timeHorizon={timeHorizon}
           adoptionRate={adoptionRate}
+          onCostChange={handleCustomCostChange}
         />
       </div>
       
@@ -115,6 +122,7 @@ const AIPotentialCalculator: React.FC = () => {
         industryId={selectedIndustry}
         industry={currentIndustry}
         roiData={roiData}
+        customCost={customCost}
       />
       
       {/* Footer */}

@@ -1,25 +1,8 @@
-
 export interface Department {
-  id: string;
   name: string;
-  avgSalary: number;
   headcount: number;
+  avgSalary: number;
   efficiencyGain: number;
-}
-
-export interface DepartmentROI {
-  name: string;
-  roi: number;
-}
-
-export interface Industry {
-  name: string;
-  description: string;
-  efficiencyGains: Record<string, number>;
-  challenges: string[];
-  overallROI?: number;
-  departmentROI?: DepartmentROI[];
-  maturityTimeline?: string;
 }
 
 export interface DepartmentImpact {
@@ -27,7 +10,7 @@ export interface DepartmentImpact {
   hoursSaved: number;
   fteEquivalent: number;
   headcount: number;
-  roi?: number;
+  roi: number;
 }
 
 export interface TotalImpact {
@@ -35,19 +18,33 @@ export interface TotalImpact {
   hoursSaved: number;
   fteEquivalent: number;
   headcount: number;
-  roi?: number;
+  roi: number;
 }
 
-export interface IndustryData {
-  industries: Record<string, Industry>;
-  industryDepartments: Record<string, Department[]>;
+export interface Industry {
+  id: string;
+  name: string;
+  overallROI?: number;
+  departmentROI?: DepartmentROI[];
+}
+
+export interface DepartmentROI {
+  name: string;
+  roi: number;
 }
 
 export interface ROIData {
+  leadersROI: string;
   timeToValue: string;
-  firstYearROI: string;
-  headcountEquivalent: string;
-  averageROI?: string;
-  leadersROI?: string;
-  maturityTimeline?: string;
+  maturityTimeline: string;
+}
+
+export interface TimelinePoint {
+  month: number;
+  label: string;
+  financialImpact: number;
+  investment: number;
+  cumulativeReturn: number;
+  roi: number;
+  formattedLabel?: string; // For chart display
 }

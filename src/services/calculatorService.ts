@@ -2,7 +2,8 @@
 import { 
   Department, 
   DepartmentImpact, 
-  TotalImpact 
+  TotalImpact,
+  TimelinePoint
 } from "@/models/calculator";
 import { 
   WORK_HOURS_PER_YEAR, 
@@ -126,4 +127,78 @@ export const calculateTotalImpact = (
 
 export const calculateROI = (investment: number, returnValue: number): number => {
   return (returnValue - investment) / investment * 100;
+};
+
+/**
+ * Generates timeline data points for the specified time horizon
+ */
+export const generateTimelineData = (
+  departments: Department[],
+  adoptionRate: number,
+  timeHorizon: number,
+  customCost: number = 0,
+  industryId: string = ""
+): TimelinePoint[] => {
+  // Create timeline points for each month up to the time horizon
+  const timeline: TimelinePoint[] = [];
+  
+  // Initial investment point (month 0)
+  timeline.push({
+    month: 0,
+    label: "Initial",
+    financialImpact: 0,
+    investment: customCost > 0 ? customCost : calculateEstimatedInvestment(departments),
+    cumulativeReturn: -1 * (customCost > 0 ? customCost : calculateEstimatedInvestment(departments)),
+    roi: -100 // Initial ROI is always -100% as there are only costs, no returns yet
+  });
+  
+  // For each month, calculate the estimated return
+  for (let month = 1; month <= timeHorizon; month++) {
+    // For shorter time horizons, adoption accelerates faster
+    const adjustedAdoptionRate = adoptionRate * (timeHorizon <= 6 ? (month / timeHorizon) * 1.5 : month / timeHorizon);
+    const cappedAdoptionRate = Math.min(adjustedAdoptionRate, adoptionRate);
+    
+    // Calculate impact for this specific month
+    const impact = calculateTotalImpact(departments, cappedAdoptionRate, month, industryId);
+    
+    // Monthly return scales with time - early months have lower returns
+    const monthlyReturn = impact.financialImpact * (month / timeHorizon);
+    
+    // Get the initial investment from the first point
+    const initialInvestment = timeline[0].investment;
+    
+    // Calculate cumulative return (subtract initial investment)
+    const prevCumulative = timeline[month - 1].cumulativeReturn;
+    const cumulativeReturn = prevCumulative + (monthlyReturn / timeHorizon);
+    
+    // Calculate ROI at this point in time
+    const currentRoi = calculateROI(initialInvestment, initialInvestment + cumulativeReturn);
+    
+    timeline.push({
+      month,
+      label: `Month ${month}`,
+      financialImpact: monthlyReturn,
+      investment: 0, // No additional investment after initial
+      cumulativeReturn,
+      roi: currentRoi
+    });
+  }
+  
+  return timeline;
+};
+
+/**
+ * Estimates initial investment based on department size and industry averages
+ */
+const calculateEstimatedInvestment = (departments: Department[]): number => {
+  // Simple estimate: $2000 per employee for implementation costs
+  const totalHeadcount = departments.reduce((total, dept) => total + dept.headcount, 0);
+  const baseInvestment = Math.max(15000, totalHeadcount * 2000);
+  
+  // Scale down for very large organizations (economies of scale)
+  if (totalHeadcount > 100) {
+    return baseInvestment * 0.8;
+  }
+  
+  return baseInvestment;
 };
