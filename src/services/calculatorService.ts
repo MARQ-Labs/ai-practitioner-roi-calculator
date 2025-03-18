@@ -46,12 +46,15 @@ export const calculateDepartmentImpact = (
   // Adjust ROI based on time horizon (shorter time horizons result in lower ROI)
   const adjustedRoi = baseRoi * (timeHorizon / 12);
   
+  // ROI can be negative for short time horizons
+  const timeBasedRoi = adjustedRoi - (6 / timeHorizon * 10); // Subtract more for shorter timeframes
+  
   return {
     financialImpact: adoptionImpact * timeFactor,
     hoursSaved: totalHoursSaved * (adoptionRate / 100) * timeFactor,
     fteEquivalent: (totalHoursSaved * (adoptionRate / 100) * timeFactor) / WORK_HOURS_PER_YEAR,
     headcount: dept.headcount,
-    roi: adjustedRoi
+    roi: timeBasedRoi
   };
 };
 
@@ -89,8 +92,13 @@ export const calculateTotalImpact = (
   result.roi = result.roi / departments.length;
   
   // Further adjust the ROI based on the time horizon for total impact
-  // This ensures the ROI increases proportionally with longer time horizons
-  result.roi = result.roi * (timeHorizon / 12);
+  // New formula: Lower or negative ROI for very short time periods
+  // For very short horizons (e.g., 1-2 months), ROI should be negative
+  const baseThreshold = 3; // months below which ROI starts becoming negative
+  const timeAdjustment = (timeHorizon - baseThreshold) / 9; // normalized adjustment factor
+  
+  // Apply a time-based adjustment that can result in negative values for very short time horizons
+  result.roi = result.roi * timeAdjustment;
 
   return result;
 };

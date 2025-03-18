@@ -66,6 +66,18 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
     setCostItems(costItems.filter(item => item.id !== id));
   };
 
+  const getRecommendationText = (roi: number) => {
+    if (roi > 100) 
+      return "Strong ROI potential. Consider accelerating implementation.";
+    if (roi > 50)
+      return "Good ROI potential. Proceed with planned implementation.";
+    if (roi > 0)
+      return "Moderate ROI. Consider phased implementation to spread costs.";
+    if (roi > -20)
+      return "Near break-even. Extend the time horizon or increase adoption rate.";
+    return "ROI below threshold. Review cost structure or increase time horizon significantly.";
+  };
+
   return (
     <Card className="mt-6 shadow-sm animate-fade-in">
       <CardHeader className="cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
@@ -164,7 +176,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
                 
                 <div className="flex justify-between items-center py-2 border-b border-gray-200">
                   <span className="text-gray-600">Return on Investment (ROI):</span>
-                  <span className={`font-bold ${calculatedROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className={`font-bold ${calculatedROI >= 0 ? 'text-green-600' : 'text-amber-600'}`}>
                     {calculatedROI.toFixed(1)}%
                   </span>
                 </div>
@@ -174,6 +186,8 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
                   <span className="font-bold text-indigo-600">
                     {paybackPeriodMonths < 1 
                       ? 'Less than 1 month'
+                      : calculatedROI < 0
+                      ? 'Beyond time horizon'
                       : `${Math.ceil(paybackPeriodMonths)} months`}
                   </span>
                 </div>
@@ -182,13 +196,7 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ totalBenefi
               <div className="mt-6 pt-4 border-t border-gray-200">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">Recommendations</h4>
                 <p className="text-sm text-gray-600">
-                  {calculatedROI > 100 
-                    ? "Strong ROI potential. Consider accelerating implementation."
-                    : calculatedROI > 50
-                    ? "Good ROI potential. Proceed with planned implementation."
-                    : calculatedROI > 0
-                    ? "Moderate ROI. Consider phased implementation to spread costs."
-                    : "ROI below threshold. Review cost structure or increase adoption rate."}
+                  {getRecommendationText(calculatedROI)}
                 </p>
               </div>
             </div>

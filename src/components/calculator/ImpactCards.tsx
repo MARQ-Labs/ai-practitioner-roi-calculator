@@ -14,6 +14,15 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, lea
   // Use the time-adjusted ROI from totalImpact, fallback to industry average if needed
   const calculatedROI = totalImpact.roi || parseFloat(industryROI);
   
+  // Get status message based on ROI
+  const getRoiStatusMessage = (roi: number) => {
+    if (roi <= -10) return "Initial investment phase, ROI negative";
+    if (roi < 0) return "Early adoption phase, approaching break-even";
+    if (roi < 15) return "Break-even point reached, early returns";
+    if (roi < 50) return "Positive ROI, good investment";
+    return "Strong ROI, excellent investment";
+  };
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
       <Card className="bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.15s" }}>
@@ -73,19 +82,19 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({ totalImpact, industryROI, lea
         </CardContent>
       </Card>
       
-      <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.45s" }}>
+      <Card className={`bg-gradient-to-br ${calculatedROI >= 0 ? 'from-green-50 to-green-100 border-green-200' : 'from-amber-50 to-amber-100 border-amber-200'} card-hover-effect animate-scale-in`} style={{ animationDelay: "0.45s" }}>
         <CardContent className="pt-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-green-800 font-medium">Return on Investment</h3>
-            <Icon name="trendingUp" className="text-green-600" size={28} />
+            <h3 className={`${calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} font-medium`}>Return on Investment</h3>
+            <Icon name={calculatedROI >= 0 ? "trendingUp" : "trendingDown"} className={calculatedROI >= 0 ? "text-green-600" : "text-amber-600"} size={28} />
           </div>
-          <div className="text-3xl font-bold text-green-800 mb-1">
+          <div className={`text-3xl font-bold ${calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} mb-1`}>
             {calculatedROI.toFixed(1)}%
           </div>
-          <p className="text-sm text-green-700">
-            Projected {totalImpact.roi ? `${Math.round(totalImpact.roi / 12)}-month` : ""} return on AI investment
+          <p className={`text-sm ${calculatedROI >= 0 ? 'text-green-700' : 'text-amber-700'}`}>
+            {getRoiStatusMessage(calculatedROI)}
           </p>
-          <div className="text-xs text-green-600 mt-4 flex items-center">
+          <div className={`text-xs ${calculatedROI >= 0 ? 'text-green-600' : 'text-amber-600'} mt-4 flex items-center`}>
             <span className="font-medium">Industry benchmark:</span>
             <span className="ml-1">{leaderROI} for mature implementations</span>
           </div>

@@ -37,9 +37,20 @@ const ROIChart: React.FC<ROIChartProps> = ({ industry, className, timeHorizon = 
   
   // Prepare data for chart and adjust ROI based on time horizon
   const timeHorizonAdjustment = timeHorizon / 12;
+  
+  // For very short horizons, adjust ROI to potentially show negative values
+  const baseThreshold = 3; // months below which ROI starts becoming negative
+  const getTimeAdjustedROI = (roi: number) => {
+    if (timeHorizon < baseThreshold) {
+      // Calculate negative adjustment for very short time periods
+      return roi * timeHorizonAdjustment - (20 / timeHorizon);
+    }
+    return roi * timeHorizonAdjustment;
+  };
+  
   const chartData = sortedDepartments.map(dept => ({
     name: dept.name,
-    roi: Math.round(dept.roi * timeHorizonAdjustment * 10) / 10, // Adjust ROI based on time horizon
+    roi: Math.round(getTimeAdjustedROI(dept.roi) * 10) / 10, // Adjust ROI based on time horizon
   }));
 
   const config = {
@@ -50,6 +61,7 @@ const ROIChart: React.FC<ROIChartProps> = ({ industry, className, timeHorizon = 
   };
 
   const getBarColor = (roi: number) => {
+    if (roi < 0) return "#f59e0b"; // amber-500
     if (roi >= 70) return "#059669"; // emerald-600
     if (roi >= 50) return "#0d9488"; // teal-600
     if (roi >= 30) return "#0891b2"; // cyan-600
@@ -87,7 +99,11 @@ const ROIChart: React.FC<ROIChartProps> = ({ industry, className, timeHorizon = 
         </BarChart>
       </ChartContainer>
       <div className="mt-4 text-xs text-gray-500 text-center">
-        {timeHorizon}-Month Industry Average ROI: {industry.overallROI ? (industry.overallROI * timeHorizonAdjustment).toFixed(1) : "0"}%
+        {timeHorizon}-Month Industry Average ROI: {
+          timeHorizon < baseThreshold 
+            ? ((industry.overallROI || 0) * timeHorizonAdjustment - (20 / timeHorizon)).toFixed(1) 
+            : (industry.overallROI ? (industry.overallROI * timeHorizonAdjustment).toFixed(1) : "0")
+        }%
       </div>
     </div>
   );
