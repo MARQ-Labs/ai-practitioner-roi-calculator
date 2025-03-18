@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
-import { Department } from "@/models/calculator";
+import { Department, Industry } from "@/models/calculator";
 import { calculateDepartmentImpact } from "@/services/calculatorService";
 
 interface EfficiencyGainsTabProps {
@@ -10,6 +10,7 @@ interface EfficiencyGainsTabProps {
   timeHorizon: number;
   industryId: string;
   industryName: string;
+  industry?: Industry; // Added to match what's being passed from TabNavigation
 }
 
 const EfficiencyGainsTab: React.FC<EfficiencyGainsTabProps> = ({

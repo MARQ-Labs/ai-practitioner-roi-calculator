@@ -61,7 +61,13 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         </TabsContent>
         
         <TabsContent value="efficiency" className="animate-slide-in-right">
-          <EfficiencyGainsTab industryId={industryId} industry={industry} />
+          <EfficiencyGainsTab 
+            departments={departments}
+            adoptionRate={adoptionRate}
+            timeHorizon={timeHorizon}
+            industryId={industryId}
+            industryName={industry.name}
+          />
         </TabsContent>
         
         <TabsContent value="roi" className="animate-slide-in-right">
