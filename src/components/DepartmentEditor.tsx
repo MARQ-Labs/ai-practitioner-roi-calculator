@@ -41,6 +41,8 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
 }) => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [editingDepartmentId, setEditingDepartmentId] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<Partial<Department>>({});
 
   const form = useForm<DepartmentInput>({
     resolver: zodResolver(departmentSchema),
@@ -51,6 +53,50 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
       efficiencyGain: 20,
     },
   });
+
+  const startEditing = (dept: Department) => {
+    setEditingDepartmentId(dept.id);
+    setEditValues({
+      name: dept.name,
+      headcount: dept.headcount,
+      avgSalary: dept.avgSalary,
+      efficiencyGain: dept.efficiencyGain,
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingDepartmentId(null);
+    setEditValues({});
+  };
+
+  const saveEditing = () => {
+    if (!editingDepartmentId || !editValues.name) return;
+    
+    const updatedDepartments = departments.map(dept => 
+      dept.id === editingDepartmentId 
+        ? { 
+            ...dept, 
+            name: editValues.name || dept.name,
+            headcount: Number(editValues.headcount) || dept.headcount,
+            avgSalary: Number(editValues.avgSalary) || dept.avgSalary,
+            efficiencyGain: Number(editValues.efficiencyGain) || dept.efficiencyGain,
+          } 
+        : dept
+    );
+    
+    onDepartmentsChange(updatedDepartments);
+    setEditingDepartmentId(null);
+    setEditValues({});
+    
+    toast({
+      title: "Department updated",
+      description: `${editValues.name} has been updated`,
+    });
+  };
+
+  const handleEditChange = (field: keyof Department, value: string) => {
+    setEditValues(prev => ({ ...prev, [field]: value }));
+  };
 
   const addDepartment = (data: DepartmentInput) => {
     const newDepartment: Department = {
@@ -252,18 +298,83 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
           {departments.length > 0 ? (
             departments.map((dept) => (
               <div key={dept.id} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 rounded transition-colors">
-                <div className="w-1/3 font-medium">{dept.name}</div>
-                <div className="w-1/5 text-center">{dept.headcount}</div>
-                <div className="w-1/5 text-center">${dept.avgSalary.toLocaleString()}</div>
-                <div className="w-1/5 text-center">{dept.efficiencyGain}%</div>
-                <div className="w-10">
-                  <button 
-                    className="text-gray-400 hover:text-red-500 transition-colors"
-                    onClick={() => removeDepartment(dept.id)}
-                  >
-                    <Icon name="trash" />
-                  </button>
-                </div>
+                {editingDepartmentId === dept.id ? (
+                  // Editing mode
+                  <>
+                    <div className="w-1/3">
+                      <Input 
+                        value={editValues.name || ''} 
+                        onChange={(e) => handleEditChange('name', e.target.value)}
+                        className="h-8 py-1"
+                      />
+                    </div>
+                    <div className="w-1/5 text-center">
+                      <Input 
+                        type="number" 
+                        value={editValues.headcount || ''} 
+                        onChange={(e) => handleEditChange('headcount', e.target.value)}
+                        className="h-8 py-1 text-center"
+                        min="1"
+                      />
+                    </div>
+                    <div className="w-1/5 text-center">
+                      <Input 
+                        type="number" 
+                        value={editValues.avgSalary || ''} 
+                        onChange={(e) => handleEditChange('avgSalary', e.target.value)}
+                        className="h-8 py-1 text-center"
+                        min="10000"
+                        step="1000"
+                      />
+                    </div>
+                    <div className="w-1/5 text-center">
+                      <Input 
+                        type="number" 
+                        value={editValues.efficiencyGain || ''} 
+                        onChange={(e) => handleEditChange('efficiencyGain', e.target.value)}
+                        className="h-8 py-1 text-center"
+                        min="1"
+                        max="80"
+                      />
+                    </div>
+                    <div className="w-10 flex gap-1">
+                      <button 
+                        className="text-gray-400 hover:text-green-500 transition-colors"
+                        onClick={saveEditing}
+                      >
+                        <Icon name="edit" />
+                      </button>
+                      <button 
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        onClick={cancelEditing}
+                      >
+                        <Icon name="trash" />
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  // Display mode
+                  <>
+                    <div className="w-1/3 font-medium">{dept.name}</div>
+                    <div className="w-1/5 text-center">{dept.headcount}</div>
+                    <div className="w-1/5 text-center">${dept.avgSalary.toLocaleString()}</div>
+                    <div className="w-1/5 text-center">{dept.efficiencyGain}%</div>
+                    <div className="w-10 flex gap-1">
+                      <button 
+                        className="text-gray-400 hover:text-blue-500 transition-colors"
+                        onClick={() => startEditing(dept)}
+                      >
+                        <Icon name="edit" />
+                      </button>
+                      <button 
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        onClick={() => removeDepartment(dept.id)}
+                      >
+                        <Icon name="trash" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ))
           ) : (
