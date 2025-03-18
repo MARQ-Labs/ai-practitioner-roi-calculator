@@ -62,3 +62,10 @@ export interface IndustryData {
   industries: Record<string, Industry>;
   industryDepartments: Record<string, Department[]>;
 }
+
+export interface CostItem {
+  id: string;
+  name: string;
+  cost: number;
+  type: "one-time" | "recurring";
+}
