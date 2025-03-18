@@ -91,7 +91,7 @@ const AIPotentialCalculator: React.FC = () => {
       {/* Impact Cards */}
       <ImpactCards 
         totalImpact={totalImpact} 
-        industryROI={currentIndustry.overallROI}
+        industryROI={currentIndustry.overallROI?.toString() || "0"}
         leaderROI={roiData.leadersROI}
       />
 
