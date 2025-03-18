@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
@@ -88,15 +89,15 @@ const AIPotentialCalculator: React.FC = () => {
         setTimeHorizon={setTimeHorizon}
       />
       
+      {/* Custom Cost Calculator - Moved above Impact Cards */}
+      <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
+      
       {/* Impact Cards */}
       <ImpactCards 
         totalImpact={totalImpact} 
         industryROI={currentIndustry.overallROI?.toString() || "0"}
         leaderROI={roiData.leadersROI}
       />
-
-      {/* Custom Cost Calculator */}
-      <CustomCostCalculator totalBenefit={totalImpact.financialImpact} />
       
       {/* Tab Navigation */}
       <TabNavigation
