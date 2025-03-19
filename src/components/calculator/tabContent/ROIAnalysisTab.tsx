@@ -74,6 +74,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Safely extract numeric value from ROI percentage string
   const extractNumericValue = (roiString: string | undefined): number => {
     if (!roiString) return 0;
+    // Remove % sign and convert to number
     const numericValue = parseFloat(roiString.replace('%', ''));
     return isNaN(numericValue) ? 0 : numericValue;
   };
@@ -83,7 +84,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     timeToValue: "3-6 months",
     firstYearROI: "200-300%",
     headcountEquivalent: "10-20%",
-    averageROI: "5.9%", 
+    averageROI: "5.90%", 
     leadersROI: "13.00%",
     maturityTimeline: "17 months"
   };
@@ -92,13 +93,10 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   const leaderROIValue = extractNumericValue(safeROIData.leadersROI);
   
   // Calculate the adjusted leaders ROI based on time horizon and adoption rate
-  let adjustedLeadersROI = "0.00%"; // Default fallback
-  if (leaderROIValue > 0) {
-    const adjustedValue = leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100);
-    adjustedLeadersROI = adjustedValue.toFixed(2) + "%";
-  }
+  const adjustedLeadersROI = leaderROIValue > 0 
+    ? formatROI(leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100))
+    : "0.00%";
 
-  // Add debug to help identify problems
   console.log("ROI Analysis Tab Data:", {
     industryId: industry.id,
     departments: industryDepartments,

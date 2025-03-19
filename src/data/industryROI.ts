@@ -5,15 +5,18 @@ import { ROIData } from "@/models/calculator";
 export const getIndustryROIData = (industryId: string): ROIData => {
   const industry = industryDefinitions[industryId];
   
+  // Default ROI data if no industry is found or as a fallback
+  const defaultROI: ROIData = {
+    timeToValue: "3-6 months",
+    firstYearROI: "200-300%",
+    headcountEquivalent: "10-20%",
+    averageROI: "5.90%",
+    leadersROI: "13.00%", 
+    maturityTimeline: "17 months"
+  };
+  
   if (!industry) {
-    return {
-      timeToValue: "3-6 months",
-      firstYearROI: "200-300%",
-      headcountEquivalent: "10-20%",
-      averageROI: "5.9%",
-      leadersROI: "13.00%", 
-      maturityTimeline: "17 months"
-    };
+    return defaultROI;
   }
 
   // Ensure we have a valid base ROI value
