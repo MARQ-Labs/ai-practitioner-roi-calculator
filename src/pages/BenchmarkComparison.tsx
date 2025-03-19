@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import {
   ChartTooltipContent
 } from "@/components/ui/chart";
 import { industryData, getIndustryROIData } from "@/data/industryData";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Sample benchmark data
 const benchmarkData = [
@@ -28,6 +28,7 @@ const benchmarkData = [
   { name: "Industry Leaders", roi: 65, efficiencyGain: 55, timeToValue: 3, implementation: 90 },
 ];
 
+// Chart data generators
 const roiChartData = Object.keys(industryData.industries).map(industryId => {
   const industry = industryData.industries[industryId];
   const roiData = getIndustryROIData(industryId);
@@ -40,7 +41,6 @@ const roiChartData = Object.keys(industryData.industries).map(industryId => {
 
 const efficiencyChartData = Object.keys(industryData.industries).map(industryId => {
   const industry = industryData.industries[industryId];
-  // Calculate average efficiency gain across departments
   const efficiencyValues = Object.values(industry.efficiencyGains || {});
   const avgEfficiency = efficiencyValues.length > 0 
     ? efficiencyValues.reduce((sum, val) => sum + val, 0) / efficiencyValues.length
@@ -49,7 +49,7 @@ const efficiencyChartData = Object.keys(industryData.industries).map(industryId 
   return {
     name: industry.name,
     averageEfficiency: Math.round(avgEfficiency),
-    topPerformerEfficiency: Math.round(avgEfficiency * 1.5) // Estimating top performers at 50% better
+    topPerformerEfficiency: Math.round(avgEfficiency * 1.5)
   };
 });
 
@@ -80,6 +80,7 @@ const efficiencyChartConfig = {
 const BenchmarkComparison: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState("roi");
   const [industryFilter, setIndustryFilter] = useState("all");
+  const isMobile = useIsMobile();
 
   // Filter data based on industry selection
   const filteredRoiData = industryFilter === "all" 
@@ -89,6 +90,17 @@ const BenchmarkComparison: React.FC = () => {
   const filteredEfficiencyData = industryFilter === "all"
     ? efficiencyChartData
     : efficiencyChartData.filter(item => item.name.toLowerCase().includes(industryFilter.toLowerCase()));
+
+  // Truncate long industry names for mobile
+  const processChartData = (data) => {
+    if (isMobile) {
+      return data.map(item => ({
+        ...item,
+        name: item.name.length > 10 ? `${item.name.substring(0, 10)}...` : item.name
+      }));
+    }
+    return data;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
@@ -159,14 +171,32 @@ const BenchmarkComparison: React.FC = () => {
           <TabsContent value="roi" className="space-y-4">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
               <h2 className="text-xl font-semibold mb-4">ROI by Industry</h2>
-              <div className="h-[400px]">
+              <div className="h-[500px]">
                 <ChartContainer config={roiChartConfig}>
-                  <BarChart data={filteredRoiData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <BarChart 
+                    data={processChartData(filteredRoiData)} 
+                    margin={{ top: 20, right: 30, left: 20, bottom: 150 }}
+                    layout={isMobile ? "vertical" : "horizontal"}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={120} />
-                    <YAxis label={{ value: 'ROI (%)', angle: -90, position: 'insideLeft' }} />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={150} 
+                      interval={0}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis 
+                      label={{ 
+                        value: 'ROI (%)', 
+                        angle: -90, 
+                        position: 'insideLeft',
+                        style: { textAnchor: 'middle' }
+                      }} 
+                    />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
+                    <Legend wrapperStyle={{ paddingTop: 20 }} />
                     <Bar dataKey="industryAverage" name="Industry Average" fill="#8884d8" />
                     <Bar dataKey="industryLeaders" name="Industry Leaders" fill="#82ca9d" />
                   </BarChart>
@@ -178,14 +208,32 @@ const BenchmarkComparison: React.FC = () => {
           <TabsContent value="efficiency" className="space-y-4">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
               <h2 className="text-xl font-semibold mb-4">Efficiency Gains by Industry</h2>
-              <div className="h-[400px]">
+              <div className="h-[500px]">
                 <ChartContainer config={efficiencyChartConfig}>
-                  <BarChart data={filteredEfficiencyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <BarChart 
+                    data={processChartData(filteredEfficiencyData)} 
+                    margin={{ top: 20, right: 30, left: 20, bottom: 150 }}
+                    layout={isMobile ? "vertical" : "horizontal"}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={120} />
-                    <YAxis label={{ value: 'Efficiency Gain (%)', angle: -90, position: 'insideLeft' }} />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={150} 
+                      interval={0}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis 
+                      label={{ 
+                        value: 'Efficiency Gain (%)', 
+                        angle: -90, 
+                        position: 'insideLeft',
+                        style: { textAnchor: 'middle' }
+                      }} 
+                    />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
+                    <Legend wrapperStyle={{ paddingTop: 20 }} />
                     <Bar dataKey="averageEfficiency" name="Average Efficiency Gain" fill="#8884d8" />
                     <Bar dataKey="topPerformerEfficiency" name="Top Performer Efficiency" fill="#82ca9d" />
                   </BarChart>
