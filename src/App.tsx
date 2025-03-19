@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BenchmarkComparison from "./pages/BenchmarkComparison";
 import CaseStudyLibrary from "./pages/CaseStudyLibrary";
+import AIMaturityAssessment from "./pages/AIMaturityAssessment";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/benchmark" element={<BenchmarkComparison />} />
           <Route path="/case-studies" element={<CaseStudyLibrary />} />
+          <Route path="/maturity-assessment" element={<AIMaturityAssessment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

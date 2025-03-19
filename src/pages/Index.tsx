@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BarChart4, BookOpen } from "lucide-react";
+import { ArrowRight, BarChart4, BookOpen, LineChart } from "lucide-react";
 import { 
   Card, 
   CardHeader, 
@@ -63,14 +63,19 @@ export default function Index() {
               </Button>
             </div>
             
-            {/* Placeholder cards for upcoming features */}
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <h3 className="font-medium text-muted-foreground">AI Maturity Assessment</h3>
+            <div className="p-4 border rounded-lg hover:border-primary/50 hover:shadow-sm transition-all">
+              <div className="mb-2 text-primary">
+                <LineChart size={24} />
+              </div>
+              <h3 className="font-medium">AI Maturity Assessment</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                Coming soon
+                Evaluate your organization's readiness for AI implementation
               </p>
-              <Button variant="outline" size="sm" disabled>
-                Start
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/maturity-assessment" className="flex items-center gap-1">
+                  <span>Assess</span>
+                  <ArrowRight size={14} />
+                </Link>
               </Button>
             </div>
           </CardContent>
