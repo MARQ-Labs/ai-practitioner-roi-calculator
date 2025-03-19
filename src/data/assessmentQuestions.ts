@@ -1,5 +1,4 @@
-
-import { MaturityCategory, MaturityQuestion } from "@/models/assessment";
+import { MaturityCategory, MaturityQuestion, MaturityLevel } from "@/models/assessment";
 
 export const maturityQuestions: MaturityQuestion[] = [
   {
