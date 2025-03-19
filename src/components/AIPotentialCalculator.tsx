@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
 import { calculateTotalImpact } from "@/services/calculatorService";
 import { Department, CostItem } from "@/models/calculator";
 import { formatReportData } from "@/utils/pdfExport";
+import { Button } from "@/components/ui/button";
 
 // Import refactored components
 import Header from "./calculator/Header";
@@ -82,7 +84,7 @@ const AIPotentialCalculator: React.FC = () => {
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
-      {/* Header with PDF Export Button */}
+      {/* Header with PDF Export Button and Benchmark Link */}
       <div className="flex justify-between items-start mb-8">
         <Header 
           selectedIndustry={selectedIndustry} 
@@ -90,7 +92,14 @@ const AIPotentialCalculator: React.FC = () => {
           handleIndustryChange={handleIndustryChange}
           roiData={roiData}
         />
-        <PdfExportButton reportData={reportData} />
+        <div className="flex space-x-3">
+          <Link to="/benchmark">
+            <Button variant="outline" className="mr-2">
+              Benchmark Comparison
+            </Button>
+          </Link>
+          <PdfExportButton reportData={reportData} />
+        </div>
       </div>
       
       {/* Department Editor */}
