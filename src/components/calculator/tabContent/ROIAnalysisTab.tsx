@@ -74,9 +74,16 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Safely extract numeric value from ROI percentage string
   const extractNumericValue = (roiString: string | undefined): number => {
     if (!roiString) return 0;
-    // Remove % sign and convert to number
-    const numericValue = parseFloat(roiString.replace('%', ''));
-    return isNaN(numericValue) ? 0 : numericValue;
+    
+    try {
+      // Handle both formats: "13%" and "13.00%"
+      const cleaned = roiString.trim().replace(/%$/, '');
+      const numericValue = parseFloat(cleaned);
+      return isNaN(numericValue) ? 0 : numericValue;
+    } catch (e) {
+      console.error("Error extracting numeric value from ROI string:", e);
+      return 0;
+    }
   };
   
   // Always ensure we have default ROI data if props are missing

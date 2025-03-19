@@ -30,7 +30,9 @@ const ROIChart: React.FC<ROIChartProps> = ({
   timeHorizon = 12,
   adoptionRate = 70
 }) => {
-  if (!industry.departmentROI || industry.departmentROI.length === 0) {
+  // Handle case when industry or departmentROI is missing
+  if (!industry || !industry.departmentROI || industry.departmentROI.length === 0) {
+    console.log("No ROI data available for industry:", industry?.id || "unknown");
     return (
       <div className={`p-4 bg-gray-100 rounded-lg text-center ${className}`}>
         <p className="text-gray-500">No ROI data available for this industry</p>
@@ -62,6 +64,14 @@ const ROIChart: React.FC<ROIChartProps> = ({
     name: dept.name,
     roi: Math.round(getTimeAdjustedROI(dept.roi) * 10) / 10, // Adjust ROI based on time horizon and adoption
   }));
+
+  console.log("ROI Chart Data:", { 
+    industry: industry.id, 
+    departmentCount: industry.departmentROI.length,
+    chartData,
+    timeHorizon,
+    adoptionRate
+  });
 
   const config = {
     roi: {

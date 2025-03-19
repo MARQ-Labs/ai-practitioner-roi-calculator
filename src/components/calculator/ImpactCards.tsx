@@ -41,6 +41,14 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
     return roi.toFixed(2) + "%";
   };
   
+  console.log("Impact Cards Data:", {
+    totalImpact,
+    industryROI,
+    leaderROI,
+    customCost,
+    calculatedROI: formatROI(calculatedROI)
+  });
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
       <Card className="bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200 card-hover-effect animate-scale-in" style={{ animationDelay: "0.15s" }}>
