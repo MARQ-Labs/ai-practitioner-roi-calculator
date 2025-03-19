@@ -25,11 +25,20 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
   
   // Get status message based on ROI
   const getRoiStatusMessage = (roi: number) => {
+    if (isNaN(roi) || roi === Infinity || roi === -Infinity) return "Awaiting data";
     if (roi <= -10) return "Initial investment phase, ROI negative";
     if (roi < 0) return "Early adoption phase, approaching break-even";
     if (roi < 15) return "Break-even point reached, early returns";
     if (roi < 50) return "Positive ROI, good investment";
     return "Strong ROI, excellent investment";
+  };
+  
+  // Format ROI value safely
+  const formatROI = (roi: number) => {
+    if (isNaN(roi) || roi === Infinity || roi === -Infinity) {
+      return "N/A";
+    }
+    return roi.toFixed(2) + "%";
   };
   
   return (
@@ -41,10 +50,10 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
             <Icon name="users" className="text-teal-600" size={28} />
           </div>
           <div className="text-3xl font-bold text-teal-800 mb-1">
-            {totalImpact.fteEquivalent.toFixed(1)} FTEs
+            {!isNaN(totalImpact.fteEquivalent) ? totalImpact.fteEquivalent.toFixed(2) : "0.00"} FTEs
           </div>
           <p className="text-sm text-teal-700">
-            Equivalent to adding {totalImpact.fteEquivalent.toFixed(1)} full-time team members
+            Equivalent to adding {!isNaN(totalImpact.fteEquivalent) ? totalImpact.fteEquivalent.toFixed(2) : "0.00"} full-time team members
           </p>
           <div className="text-xs text-teal-600 mt-4 flex items-center">
             <span className="font-medium">Current team size:</span>
@@ -60,14 +69,18 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
             <Icon name="clock" className="text-amber-600" size={28} />
           </div>
           <div className="text-3xl font-bold text-amber-800 mb-1">
-            {Math.round(totalImpact.hoursSaved).toLocaleString()} hours
+            {!isNaN(totalImpact.hoursSaved) ? Math.round(totalImpact.hoursSaved).toLocaleString() : "0"} hours
           </div>
           <p className="text-sm text-amber-700">
             Time redirected to strategic priorities and high-value work
           </p>
           <div className="text-xs text-amber-600 mt-4 flex items-center">
             <span className="font-medium">Per team member:</span>
-            <span className="ml-1">{totalImpact.headcount ? Math.round(totalImpact.hoursSaved / totalImpact.headcount) : 0} hours/year</span>
+            <span className="ml-1">
+              {totalImpact.headcount && !isNaN(totalImpact.hoursSaved) 
+                ? Math.round(totalImpact.hoursSaved / totalImpact.headcount) 
+                : 0} hours/year
+            </span>
           </div>
         </CardContent>
       </Card>
@@ -79,7 +92,7 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
             <Icon name="chart" className="text-indigo-600" size={28} />
           </div>
           <div className="text-3xl font-bold text-indigo-800 mb-1">
-            ${Math.round(totalImpact.financialImpact).toLocaleString()}
+            ${!isNaN(totalImpact.financialImpact) ? Math.round(totalImpact.financialImpact).toLocaleString() : "0"}
           </div>
           <p className="text-sm text-indigo-700">
             Financial equivalent of reclaimed capacity
@@ -91,19 +104,19 @@ const ImpactCards: React.FC<ImpactCardsProps> = ({
         </CardContent>
       </Card>
       
-      <Card className={`bg-gradient-to-br ${calculatedROI >= 0 ? 'from-green-50 to-green-100 border-green-200' : 'from-amber-50 to-amber-100 border-amber-200'} card-hover-effect animate-scale-in`} style={{ animationDelay: "0.45s" }}>
+      <Card className={`bg-gradient-to-br ${!isNaN(calculatedROI) && calculatedROI >= 0 ? 'from-green-50 to-green-100 border-green-200' : 'from-amber-50 to-amber-100 border-amber-200'} card-hover-effect animate-scale-in`} style={{ animationDelay: "0.45s" }}>
         <CardContent className="pt-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className={`${calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} font-medium`}>Return on Investment</h3>
-            <Icon name={calculatedROI >= 0 ? "trendingUp" : "trendingDown"} className={calculatedROI >= 0 ? "text-green-600" : "text-amber-600"} size={28} />
+            <h3 className={`${!isNaN(calculatedROI) && calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} font-medium`}>Return on Investment</h3>
+            <Icon name={!isNaN(calculatedROI) && calculatedROI >= 0 ? "trendingUp" : "trendingDown"} className={!isNaN(calculatedROI) && calculatedROI >= 0 ? "text-green-600" : "text-amber-600"} size={28} />
           </div>
-          <div className={`text-3xl font-bold ${calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} mb-1`}>
-            {calculatedROI.toFixed(1)}%
+          <div className={`text-3xl font-bold ${!isNaN(calculatedROI) && calculatedROI >= 0 ? 'text-green-800' : 'text-amber-800'} mb-1`}>
+            {formatROI(calculatedROI)}
           </div>
-          <p className={`text-sm ${calculatedROI >= 0 ? 'text-green-700' : 'text-amber-700'}`}>
+          <p className={`text-sm ${!isNaN(calculatedROI) && calculatedROI >= 0 ? 'text-green-700' : 'text-amber-700'}`}>
             {getRoiStatusMessage(calculatedROI)}
           </p>
-          <div className={`text-xs ${calculatedROI >= 0 ? 'text-green-600' : 'text-amber-600'} mt-4 flex items-center`}>
+          <div className={`text-xs ${!isNaN(calculatedROI) && calculatedROI >= 0 ? 'text-green-600' : 'text-amber-600'} mt-4 flex items-center`}>
             <span className="font-medium">Investment amount:</span>
             <span className="ml-1">${Math.round(investment).toLocaleString()}</span>
           </div>

@@ -68,9 +68,17 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     ? parseFloat(roiData.leadersROI.replace('%', '')) 
     : 0;
     
-  const adjustedLeadersROI = calculatedROI < 0
+  const adjustedLeadersROI = isNaN(calculatedROI) || calculatedROI < 0
     ? "Break-even at 4 months"
-    : (leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(1) + "%";
+    : (leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(2) + "%";
+
+  // Format ROI values safely
+  const formatROI = (roi: number) => {
+    if (isNaN(roi) || roi === Infinity || roi === -Infinity) {
+      return "N/A";
+    }
+    return roi.toFixed(2) + "%";
+  };
 
   // Add debug to help identify problems
   console.log("ROI Analysis Tab Data:", {
@@ -125,8 +133,8 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                 <div className="space-y-3">
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">{timeHorizon}-Month Projected ROI:</span>
-                    <span className={`font-bold ${calculatedROI < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
-                      {calculatedROI.toFixed(1)}%
+                    <span className={`font-bold ${!isNaN(calculatedROI) && calculatedROI < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
+                      {formatROI(calculatedROI)}
                     </span>
                   </div>
                   <div className="flex justify-between border-b pb-2">

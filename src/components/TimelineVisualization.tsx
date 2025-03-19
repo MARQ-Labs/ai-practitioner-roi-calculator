@@ -36,7 +36,7 @@ const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
     return breakEvenMonth !== -1 ? timelineData[breakEvenMonth] : null;
   }, [timelineData]);
   
-  // Format data for better display
+  // Format data for better display and handle NaN values
   const formattedData = useMemo(() => {
     return timelineData.map(point => ({
       ...point,
@@ -45,15 +45,17 @@ const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
       // Format currency values
       formattedInvestment: formatCurrency(point.investment),
       formattedReturn: formatCurrency(point.cumulativeReturn),
-      formattedROI: `${point.roi.toFixed(1)}%`
+      formattedROI: isNaN(point.roi) ? "N/A" : `${point.roi.toFixed(2)}%`,
+      // Ensure numeric values are valid for charts
+      roi: isNaN(point.roi) ? 0 : point.roi
     }));
   }, [timelineData]);
   
   // Calculate the maximum absolute value for setting chart domain
   const maxValue = Math.max(
     ...timelineData.map(p => Math.max(
-      Math.abs(p.cumulativeReturn),
-      p.investment
+      Math.abs(isNaN(p.cumulativeReturn) ? 0 : p.cumulativeReturn),
+      isNaN(p.investment) ? 0 : p.investment
     ))
   );
   
@@ -155,14 +157,17 @@ const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-medium text-blue-800">Initial Investment</h3>
-              <p className="text-2xl font-bold text-blue-900">{formatCurrency(timelineData[0].investment)}</p>
+              <p className="text-2xl font-bold text-blue-900">{formatCurrency(timelineData[0]?.investment || 0)}</p>
               <p className="text-sm text-blue-700 mt-1">One-time implementation cost</p>
             </div>
             
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-medium text-green-800">Projected Return</h3>
               <p className="text-2xl font-bold text-green-900">
-                {formatCurrency(timelineData[timelineData.length - 1].cumulativeReturn + timelineData[0].investment)}
+                {formatCurrency(
+                  (timelineData[timelineData.length - 1]?.cumulativeReturn || 0) + 
+                  (timelineData[0]?.investment || 0)
+                )}
               </p>
               <p className="text-sm text-green-700 mt-1">Total return after {timelineData.length - 1} months</p>
             </div>
@@ -210,7 +215,7 @@ const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
                   }} 
                 />
                 <YAxis 
-                  tickFormatter={(value) => `${value}%`}
+                  tickFormatter={(value) => `${value.toFixed(2)}%`}
                   domain={['dataMin', 'dataMax']}
                   label={{ 
                     value: 'ROI (%)', 
@@ -220,7 +225,7 @@ const TimelineVisualization: React.FC<TimelineVisualizationProps> = ({
                   }}
                 />
                 <Tooltip 
-                  formatter={(value) => [`${Number(value).toFixed(1)}%`, 'ROI']}
+                  formatter={(value) => [`${Number(value).toFixed(2)}%`, 'ROI']}
                   labelFormatter={(label) => `Timeline: ${label}`}
                 />
                 <ReferenceLine y={0} stroke="#6b7280" strokeDasharray="3 3" />

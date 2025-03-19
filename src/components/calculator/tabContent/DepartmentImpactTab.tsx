@@ -40,7 +40,10 @@ const DepartmentImpactTab: React.FC<DepartmentImpactTabProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <p className="text-sm text-gray-600">Department details:</p>
-                  {impact.roi && <span className="text-sm font-medium text-green-600">ROI: {impact.roi.toFixed(2)}%</span>}
+                  {impact.roi !== undefined && !isNaN(impact.roi) ? 
+                    <span className="text-sm font-medium text-green-600">ROI: {impact.roi.toFixed(2)}%</span> : 
+                    <span className="text-sm font-medium text-amber-600">ROI: Calculating...</span>
+                  }
                 </div>
                 <ul className="text-sm list-disc pl-5 mt-1">
                   <li>Staff: {dept.headcount} team members</li>

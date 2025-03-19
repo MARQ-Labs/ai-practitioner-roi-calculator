@@ -55,11 +55,17 @@ const EfficiencyGainsTab: React.FC<EfficiencyGainsTabProps> = ({
                         <div className="text-sm text-gray-900">{dept.efficiencyGain}%</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{weeklyHoursSaved.toFixed(1)} hours</div>
-                        <div className="text-xs text-gray-500">{(weeklyHoursSaved / dept.headcount).toFixed(1)} hrs/person</div>
+                        <div className="text-sm text-gray-900">
+                          {!isNaN(weeklyHoursSaved) ? weeklyHoursSaved.toFixed(2) : "0.00"} hours
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {!isNaN(weeklyHoursSaved) ? (weeklyHoursSaved / dept.headcount).toFixed(2) : "0.00"} hrs/person
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-teal-600 font-medium">${Math.round(impact.financialImpact).toLocaleString()}</div>
+                        <div className="text-sm text-teal-600 font-medium">
+                          ${!isNaN(impact.financialImpact) ? Math.round(impact.financialImpact).toLocaleString() : "0"}
+                        </div>
                       </td>
                     </tr>
                   );
