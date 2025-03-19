@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Download, FileDown, Loader2 } from 'lucide-react';
-import { useReactToPdf } from 'react-to-pdf';
+import html2pdf from 'html2pdf.js';
 import ReportContent from './ReportContent';
 import { ReportData } from '@/utils/pdfExport';
 
@@ -25,26 +25,26 @@ const PdfExportButton: React.FC<PdfExportButtonProps> = ({ reportData }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const { toPdf } = useReactToPdf({
-    targetRef: contentRef,
-    filename: `${reportData.industry.name.toLowerCase().replace(/\s+/g, '-')}-ai-roi-report.pdf`,
-    options: {
-      orientation: 'portrait',
-      format: 'a4',
-      margin: {
-        top: '20mm',
-        bottom: '20mm',
-        left: '15mm',
-        right: '15mm'
-      },
-    },
-  });
-
   const handleExport = async () => {
     setIsGenerating(true);
     
     try {
-      await toPdf();
+      if (!contentRef.current) {
+        throw new Error("Content reference is not available");
+      }
+
+      const filename = `${reportData.industry.name.toLowerCase().replace(/\s+/g, '-')}-ai-roi-report.pdf`;
+      
+      const opt = {
+        margin: [15, 15, 15, 15],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      await html2pdf().from(contentRef.current).set(opt).save();
+      
       toast({
         title: "Report generated successfully",
         description: "Your PDF report has been downloaded",
