@@ -18,14 +18,14 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <div className="mb-6 animate-fade-in-up">
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-teal-800 mb-2">AI Capacity & ROI Calculator</h1>
           <p className="text-gray-600">
             See how strategic AI adoption creates additional team capacity and ROI for your organization
           </p>
         </div>
-        <div className="md:w-1/3">
+        <div className="md:w-auto min-w-[280px]">
           <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
           <select 
             className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
@@ -52,13 +52,19 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex-1">
             <h2 className="font-semibold text-teal-800">{currentIndustry.name}</h2>
             <p className="text-sm text-teal-600">{currentIndustry.description}</p>
-            <div className="mt-2 text-sm text-teal-700">
-              <span className="font-medium">Industry Average ROI: </span>
-              <span className="font-bold">{currentIndustry.overallROI}%</span>
-              <span className="ml-4 font-medium">AI Leaders ROI: </span>
-              <span className="font-bold">{roiData.leadersROI}</span>
-              <span className="ml-4 font-medium">Maturity Timeline: </span>
-              <span className="font-bold">{roiData.maturityTimeline}</span>
+            <div className="mt-2 text-sm text-teal-700 flex flex-wrap gap-x-4 gap-y-1">
+              <div>
+                <span className="font-medium">Industry Average ROI: </span>
+                <span className="font-bold">{currentIndustry.overallROI}%</span>
+              </div>
+              <div>
+                <span className="font-medium">AI Leaders ROI: </span>
+                <span className="font-bold">{roiData.leadersROI}</span>
+              </div>
+              <div>
+                <span className="font-medium">Maturity Timeline: </span>
+                <span className="font-bold">{roiData.maturityTimeline}</span>
+              </div>
             </div>
           </div>
         </div>

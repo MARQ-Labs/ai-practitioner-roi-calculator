@@ -84,17 +84,17 @@ const AIPotentialCalculator: React.FC = () => {
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
-      {/* Header with PDF Export Button and Benchmark Link */}
-      <div className="flex justify-between items-start mb-8">
+      {/* Header section with action buttons positioned absolutely */}
+      <div className="relative mb-8">
         <Header 
           selectedIndustry={selectedIndustry} 
           currentIndustry={currentIndustry}
           handleIndustryChange={handleIndustryChange}
           roiData={roiData}
         />
-        <div className="flex space-x-3">
+        <div className="mt-4 md:mt-0 md:absolute md:top-0 md:right-0 flex flex-wrap gap-3 justify-end">
           <Link to="/benchmark">
-            <Button variant="outline" className="mr-2">
+            <Button variant="outline" size="sm" className="whitespace-nowrap">
               Benchmark Comparison
             </Button>
           </Link>
