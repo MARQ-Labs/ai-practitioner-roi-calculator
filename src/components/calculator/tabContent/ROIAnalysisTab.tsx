@@ -63,19 +63,19 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Calculate ROI consistently with other components
   const calculatedROI = calculateROI(investment, totalBenefit);
   
-  // For leaders ROI calculation
+  // For leaders ROI calculation - ensure it's always a valid number and properly formatted
   const leaderROIValue = roiData.leadersROI 
     ? parseFloat(roiData.leadersROI.replace('%', '')) 
     : 0;
     
-  const adjustedLeadersROI = isNaN(calculatedROI) || calculatedROI < 0
-    ? "Break-even at 4 months"
-    : (leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(2) + "%";
+  const adjustedLeadersROI = isNaN(leaderROIValue) || leaderROIValue === 0
+    ? "0.00%"
+    : ((leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(2) + "%");
 
   // Format ROI values safely
   const formatROI = (roi: number) => {
     if (isNaN(roi) || roi === Infinity || roi === -Infinity) {
-      return "N/A";
+      return "0.00%";
     }
     return roi.toFixed(2) + "%";
   };
@@ -88,7 +88,8 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     investment,
     totalBenefit,
     calculatedROI,
-    hasValidDepartments
+    hasValidDepartments,
+    adjustedLeadersROI
   });
 
   // Show toast when there's an issue with timeline data
@@ -147,11 +148,11 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Time to Value:</span>
-                    <span className="font-bold text-teal-700">{roiData.timeToValue}</span>
+                    <span className="font-bold text-teal-700">{roiData.timeToValue || "3-6 months"}</span>
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Maturity Timeline:</span>
-                    <span className="font-bold text-teal-700">{roiData.maturityTimeline}</span>
+                    <span className="font-bold text-teal-700">{roiData.maturityTimeline || "17 months"}</span>
                   </div>
                 </div>
               </div>
@@ -163,7 +164,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                   <li>Ensure high data quality (accuracy currently at 54.6%)</li>
                   <li>Implement across multiple departments simultaneously</li>
                   <li>Secure executive leadership involvement in governance</li>
-                  <li>Plan for {roiData.maturityTimeline} to reach full maturity</li>
+                  <li>Plan for {roiData.maturityTimeline || "17 months"} to reach full maturity</li>
                 </ul>
               </div>
             </div>
