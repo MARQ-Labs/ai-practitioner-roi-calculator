@@ -2,12 +2,15 @@
 import React from "react";
 import { Industry } from "@/models/calculator";
 import Icon from "@/components/Icon";
+import PdfExportButton from "../pdf/PdfExportButton";
+import { ReportData } from "@/utils/pdfExport";
 
 interface HeaderProps {
   selectedIndustry: string;
   currentIndustry: Industry;
   handleIndustryChange: (industry: string) => void;
   roiData: any;
+  reportData: ReportData;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -15,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({
   currentIndustry,
   handleIndustryChange,
   roiData,
+  reportData
 }) => {
   return (
     <div className="mb-6 animate-fade-in-up">
@@ -25,25 +29,28 @@ const Header: React.FC<HeaderProps> = ({
             See how strategic AI adoption creates additional team capacity and ROI for your organization
           </p>
         </div>
-        <div className="md:w-auto min-w-[280px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-          <select 
-            className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-            value={selectedIndustry}
-            onChange={(e) => handleIndustryChange(e.target.value)}
-          >
-            <option value="technology">Information & Communication Technology</option>
-            <option value="manufacturing">Manufacturing</option>
-            <option value="finance">Financial Services</option>
-            <option value="healthcare">Healthcare</option>
-            <option value="retail">Retail & Consumer Goods</option>
-            <option value="media">Media & Telecommunications</option>
-            <option value="professional">Professional Services</option>
-            <option value="energy">Energy & Utilities</option>
-            <option value="logistics">Transportation & Logistics</option>
-            <option value="insurance">Insurance</option>
-            <option value="tourism">Tourism & Hospitality</option>
-          </select>
+        <div className="flex items-center gap-3">
+          <PdfExportButton reportData={reportData} />
+          <div className="md:w-auto min-w-[280px]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+            <select 
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
+              value={selectedIndustry}
+              onChange={(e) => handleIndustryChange(e.target.value)}
+            >
+              <option value="technology">Information & Communication Technology</option>
+              <option value="manufacturing">Manufacturing</option>
+              <option value="finance">Financial Services</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="retail">Retail & Consumer Goods</option>
+              <option value="media">Media & Telecommunications</option>
+              <option value="professional">Professional Services</option>
+              <option value="energy">Energy & Utilities</option>
+              <option value="logistics">Transportation & Logistics</option>
+              <option value="insurance">Insurance</option>
+              <option value="tourism">Tourism & Hospitality</option>
+            </select>
+          </div>
         </div>
       </div>
       

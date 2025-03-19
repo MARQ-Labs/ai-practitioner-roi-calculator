@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -85,17 +86,12 @@ const AIPotentialCalculator: React.FC = () => {
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
       {/* Header section with action buttons */}
       <div className="relative mb-8">
-        <div className="flex justify-end mb-4">
-          <div className="flex flex-wrap gap-3">
-            <PdfExportButton reportData={reportData} />
-          </div>
-        </div>
-        
         <Header 
           selectedIndustry={selectedIndustry} 
           currentIndustry={currentIndustry}
           handleIndustryChange={handleIndustryChange}
           roiData={roiData}
+          reportData={reportData}
         />
       </div>
       
