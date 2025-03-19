@@ -1,11 +1,13 @@
 
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { caseStudies } from "@/data/caseStudies";
 import { CaseStudy, Industry } from "@/models/caseStudy";
 import { CaseStudyCard } from "@/components/caseStudy/CaseStudyCard";
 import { IndustryFilter } from "@/components/caseStudy/IndustryFilter";
 import { SearchInput } from "@/components/caseStudy/SearchInput";
-import { Book } from "lucide-react";
+import { Book, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const CaseStudyLibrary: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,6 +41,16 @@ const CaseStudyLibrary: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-7xl">
+      {/* Back navigation */}
+      <div className="mb-6">
+        <Button variant="ghost" size="sm" asChild className="flex items-center gap-2">
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Calculator</span>
+          </Link>
+        </Button>
+      </div>
+      
       <div className="mb-8 text-center">
         <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-4">
           <Book className="h-6 w-6 text-primary" />
