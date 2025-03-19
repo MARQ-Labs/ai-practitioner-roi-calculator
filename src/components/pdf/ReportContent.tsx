@@ -2,6 +2,7 @@
 import React from "react";
 import { ReportData, getSummaryText } from "@/utils/pdfExport";
 import { formatCurrency } from "@/lib/utils";
+import { WORK_HOURS_PER_YEAR } from "@/data/industryData";
 
 interface ReportContentProps {
   data: ReportData;
@@ -76,9 +77,16 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
           </thead>
           <tbody>
             {departments.map((dept) => {
-              const hoursSaved = dept.headcount * dept.hoursPerEmployee * (adoptionRate / 100);
-              const fteEquivalent = hoursSaved / (40 * 52);
-              const financialImpact = hoursSaved * dept.hourlyRate;
+              // Calculate hourly rate from annual salary
+              const hourlyRate = dept.avgSalary / WORK_HOURS_PER_YEAR;
+              
+              // Calculate hours saved based on efficiency gain percentage
+              const efficiencyRate = dept.efficiencyGain / 100;
+              const hoursPerEmployee = WORK_HOURS_PER_YEAR * efficiencyRate;
+              const hoursSaved = dept.headcount * hoursPerEmployee * (adoptionRate / 100);
+              
+              const fteEquivalent = hoursSaved / WORK_HOURS_PER_YEAR;
+              const financialImpact = hoursSaved * hourlyRate;
               
               return (
                 <tr key={dept.id} className="hover:bg-gray-50">
