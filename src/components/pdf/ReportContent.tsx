@@ -111,6 +111,82 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </table>
       </div>
       
+      {/* NEW SECTION: Calculation Methodology */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Calculation Methodology</h2>
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h3 className="font-medium text-gray-800 mb-2">How These Numbers Are Calculated</h3>
+          <p className="text-sm text-gray-700 mb-2">This report uses the following methodology to calculate the potential impact of AI adoption:</p>
+          
+          <div className="space-y-3">
+            <div className="border-l-4 border-teal-500 pl-3 py-1">
+              <h4 className="font-medium">Hours Saved</h4>
+              <p className="text-xs text-gray-600">
+                Hours Saved = Headcount × Annual Working Hours × Efficiency Gain % × Adoption Rate %
+              </p>
+              <p className="text-xs text-gray-600">
+                Annual Working Hours = {WORK_HOURS_PER_YEAR} hours
+              </p>
+            </div>
+            
+            <div className="border-l-4 border-teal-500 pl-3 py-1">
+              <h4 className="font-medium">Financial Impact</h4>
+              <p className="text-xs text-gray-600">
+                Financial Impact = Hours Saved × Hourly Rate
+              </p>
+              <p className="text-xs text-gray-600">
+                Hourly Rate = Annual Salary ÷ {WORK_HOURS_PER_YEAR} hours
+              </p>
+            </div>
+            
+            <div className="border-l-4 border-teal-500 pl-3 py-1">
+              <h4 className="font-medium">FTE Equivalent</h4>
+              <p className="text-xs text-gray-600">
+                FTE Equivalent = Hours Saved ÷ {WORK_HOURS_PER_YEAR} hours
+              </p>
+              <p className="text-xs text-gray-600">
+                (Full-Time Equivalent represents the equivalent number of full-time employees)
+              </p>
+            </div>
+            
+            <div className="border-l-4 border-teal-500 pl-3 py-1">
+              <h4 className="font-medium">Return on Investment (ROI)</h4>
+              <p className="text-xs text-gray-600">
+                ROI = ((Financial Impact ÷ Investment Cost) × 100) - 100
+              </p>
+              <p className="text-xs text-gray-600">
+                Investment Cost: {customCost ? formatCurrency(customCost) : "30% of Financial Impact"}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-amber-50 p-4 rounded-lg">
+          <h3 className="font-medium text-amber-800 mb-2">Industry Efficiency Benchmark Data</h3>
+          <p className="text-sm text-amber-700 mb-2">
+            AI efficiency gains are derived from {industry.name} industry benchmarks:
+          </p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-amber-100">
+                <th className="p-2 text-left">Department</th>
+                <th className="p-2 text-right">Avg. Efficiency Gain</th>
+                <th className="p-2 text-right">Avg. Salary</th>
+              </tr>
+            </thead>
+            <tbody>
+              {departments.map((dept) => (
+                <tr key={`benchmark-${dept.id}`} className="border-b border-amber-200">
+                  <td className="p-2">{dept.name}</td>
+                  <td className="p-2 text-right">{dept.efficiencyGain}%</td>
+                  <td className="p-2 text-right">{formatCurrency(dept.avgSalary)}/year</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
       {/* Implementation Parameters */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-teal-700 mb-4">Implementation Parameters</h2>
@@ -137,10 +213,28 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </div>
       </div>
       
+      {/* Time Adjustment Factors */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Time & Adoption Factors</h2>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-700 mb-2">
+            Impact calculations are adjusted based on time horizon and adoption rate factors:
+          </p>
+          <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+            <li>Short implementation periods (&lt;6 months) typically achieve 40-60% of potential gains</li>
+            <li>Medium implementation periods (6-12 months) typically achieve 70-90% of potential gains</li>
+            <li>Long implementation periods (&gt;12 months) can achieve 90-100% of potential gains</li>
+            <li>Lower adoption rates (&lt;50%) significantly reduce overall impact</li>
+            <li>{industry.name} industry typically reaches maturity in {industry.maturityTimeline || "12-18 months"}</li>
+          </ul>
+        </div>
+      </div>
+      
       {/* Footer */}
       <div className="text-center text-gray-500 text-sm mt-12 pt-6 border-t">
         <p>Generated using AI ROI Calculator</p>
         <p>© {new Date().getFullYear()} - All metrics are projections based on industry data</p>
+        <p className="mt-1 text-xs">Methodology based on industry benchmarks and adoption research</p>
       </div>
     </div>
   );
