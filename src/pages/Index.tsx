@@ -11,11 +11,18 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AIPotentialCalculator from "../components/AIPotentialCalculator";
+import PdfExportButton from "../components/pdf/PdfExportButton";
 
 export default function Index() {
+  // Get reportData from AIPotentialCalculator to pass to PDF button
+  const [reportData, setReportData] = useState(null);
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      <div className="text-center my-4">
+      <div className="text-center my-4 relative">
+        <div className="absolute right-0 top-0">
+          {reportData && <PdfExportButton reportData={reportData} />}
+        </div>
         <h1 className="text-3xl font-bold tracking-tight">AI ROI Calculator</h1>
         <p className="text-gray-500 mt-2">
           Calculate the potential return on investment for implementing AI in your organization
@@ -82,7 +89,7 @@ export default function Index() {
         </Card>
       </div>
 
-      <AIPotentialCalculator />
+      <AIPotentialCalculator onReportDataChange={setReportData} />
     </div>
   );
 }

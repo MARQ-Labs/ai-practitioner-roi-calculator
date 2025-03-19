@@ -16,9 +16,12 @@ import TabNavigation from "./calculator/TabNavigation";
 import PageFooter from "./calculator/PageFooter";
 import DepartmentEditor from "./DepartmentEditor";
 import CustomCostCalculator from "./calculator/CustomCostCalculator";
-import PdfExportButton from "./pdf/PdfExportButton";
 
-const AIPotentialCalculator: React.FC = () => {
+interface AIPotentialCalculatorProps {
+  onReportDataChange?: (reportData: any) => void;
+}
+
+const AIPotentialCalculator: React.FC<AIPotentialCalculatorProps> = ({ onReportDataChange }) => {
   // Basic state
   const [adoptionRate, setAdoptionRate] = useState(70);
   const [timeHorizon, setTimeHorizon] = useState(12);
@@ -54,6 +57,13 @@ const AIPotentialCalculator: React.FC = () => {
     customCost,
     costItems
   );
+
+  // Pass reportData to parent component
+  useEffect(() => {
+    if (onReportDataChange) {
+      onReportDataChange(reportData);
+    }
+  }, [reportData, onReportDataChange]);
 
   useEffect(() => {
     setCustomDepartments([]);
@@ -91,7 +101,6 @@ const AIPotentialCalculator: React.FC = () => {
           currentIndustry={currentIndustry}
           handleIndustryChange={handleIndustryChange}
           roiData={roiData}
-          reportData={reportData}
         />
       </div>
       
