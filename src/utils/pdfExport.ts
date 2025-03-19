@@ -40,6 +40,14 @@ export function getSummaryText(reportData: ReportData): string {
   const { industry, totalImpact, timeHorizon, adoptionRate, customCost } = reportData;
   
   const investment = customCost || totalImpact.financialImpact * 0.3;
+  const roi = ((totalImpact.financialImpact / investment) * 100 - 100).toFixed(1);
+  
+  // Calculate months to break-even (simplified)
+  const monthlyBenefit = totalImpact.financialImpact / timeHorizon;
+  const breakEvenMonths = investment / monthlyBenefit;
+  const breakEvenText = breakEvenMonths > timeHorizon 
+    ? "beyond the current projection window" 
+    : `approximately month ${Math.ceil(breakEvenMonths)}`;
   
   return `
     Based on our analysis of ${industry.name} industry metrics with a ${adoptionRate}% adoption rate over ${timeHorizon} months, 
@@ -49,7 +57,13 @@ export function getSummaryText(reportData: ReportData): string {
     • ${Math.round(totalImpact.hoursSaved).toLocaleString()} hours reclaimed across your organization
     • Equivalent to adding ${totalImpact.fteEquivalent.toFixed(2)} full-time employees
     • Projected investment of ${formatCurrency(investment)}
+    • Return on Investment (ROI) of ${roi}%
+    • Break-even point reached at ${breakEvenText}
     
-    This represents a comprehensive analysis of AI's potential impact across your organization.
+    This comprehensive AI implementation strategy is tailored to your organization's specific needs, with an optimized approach 
+    for the ${industry.name} industry. The phased implementation plan ensures maximum adoption and value realization.
+    
+    Key success metrics will be tracked throughout the implementation to ensure your organization achieves 
+    the projected benefits while mitigating common adoption risks.
   `;
 }

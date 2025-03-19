@@ -62,7 +62,7 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Investment Cost Breakdown - NEW SECTION */}
+      {/* Investment Cost Breakdown */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-teal-700 mb-4">Investment Cost Breakdown</h2>
         <div className="bg-gray-50 p-4 rounded-lg">
@@ -128,6 +128,68 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </div>
       </div>
       
+      {/* Timeline Projection - NEW SECTION */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">ROI Timeline Projection</h2>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="border rounded-lg p-3 bg-blue-50">
+              <h3 className="font-medium text-blue-800 mb-1">Initial Phase (1-3 months)</h3>
+              <p className="text-sm text-blue-700">
+                Implementation costs are highest during this phase. Expect limited returns as teams adapt to new AI tools. 
+                Focus on training and integration with existing workflows.
+              </p>
+            </div>
+            
+            <div className="border rounded-lg p-3 bg-amber-50">
+              <h3 className="font-medium text-amber-800 mb-1">Growth Phase (4-9 months)</h3>
+              <p className="text-sm text-amber-700">
+                ROI begins to improve as adoption increases. Staff become more proficient with AI tools, 
+                efficiency gains start to materialize across departments.
+              </p>
+            </div>
+            
+            <div className="border rounded-lg p-3 bg-green-50">
+              <h3 className="font-medium text-green-800 mb-1">Maturity Phase (10+ months)</h3>
+              <p className="text-sm text-green-700">
+                Maximum ROI achieved as AI becomes fully integrated into operations. 
+                Organizations typically see {industry.name} industry-specific benefits fully realized.
+              </p>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <h4 className="font-medium text-gray-800 mb-2">Break-even Analysis</h4>
+            <p className="text-sm text-gray-700 mb-2">
+              Based on your current parameters, the break-even point is estimated to occur around month 
+              {customCost && totalImpact.financialImpact > 0
+                ? ` ${Math.ceil((customCost / totalImpact.financialImpact) * timeHorizon)}`
+                : ' 6-8'} 
+              of implementation.
+            </p>
+            
+            <div className="flex flex-col space-y-1 text-sm">
+              <div className="flex items-center">
+                <div className="w-1/3 md:w-1/4 font-medium">Month 1-3:</div>
+                <div className="w-2/3 md:w-3/4 text-amber-700">Initial investment phase, negative ROI</div>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1/3 md:w-1/4 font-medium">Month 4-6:</div>
+                <div className="w-2/3 md:w-3/4 text-amber-700">Approaching break-even, minimal positive returns</div>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1/3 md:w-1/4 font-medium">Month 7-9:</div>
+                <div className="w-2/3 md:w-3/4 text-green-700">Positive ROI phase, steady returns</div>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1/3 md:w-1/4 font-medium">Month 10+:</div>
+                <div className="w-2/3 md:w-3/4 text-green-700">Maturity phase, maximum ROI realized</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Department Breakdown */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-teal-700 mb-4">Department Impact</h2>
@@ -175,6 +237,69 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
             </tr>
           </tfoot>
         </table>
+      </div>
+      
+      {/* Department-Specific Insights - NEW SECTION */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Department-Specific AI Value</h2>
+        <div className="space-y-4">
+          {departments.map((dept) => {
+            // Calculate hourly rate and impact metrics
+            const hourlyRate = dept.avgSalary / WORK_HOURS_PER_YEAR;
+            const efficiencyRate = dept.efficiencyGain / 100;
+            const hoursPerEmployee = WORK_HOURS_PER_YEAR * efficiencyRate;
+            const hoursSaved = dept.headcount * hoursPerEmployee * (adoptionRate / 100);
+            const financialImpact = hoursSaved * hourlyRate;
+            
+            // Determine value category based on financial impact percentage of total
+            const impactPercentage = (financialImpact / totalImpact.financialImpact) * 100;
+            let valueCategory = "Moderate";
+            let bgColor = "bg-amber-50";
+            let textColor = "text-amber-800";
+            
+            if (impactPercentage > 25) {
+              valueCategory = "Very High";
+              bgColor = "bg-green-50";
+              textColor = "text-green-800";
+            } else if (impactPercentage > 15) {
+              valueCategory = "High";
+              bgColor = "bg-emerald-50";
+              textColor = "text-emerald-800";
+            } else if (impactPercentage < 5) {
+              valueCategory = "Limited";
+              bgColor = "bg-gray-50";
+              textColor = "text-gray-800";
+            }
+            
+            return (
+              <div key={`insights-${dept.id}`} className={`p-3 rounded-lg border ${bgColor}`}>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                  <h3 className={`font-medium ${textColor}`}>{dept.name}</h3>
+                  <div className="flex items-center mt-1 md:mt-0">
+                    <span className="text-xs bg-white rounded-full px-2 py-1 border">
+                      Value Potential: <span className="font-semibold">{valueCategory}</span>
+                    </span>
+                    <span className="ml-2 text-xs bg-white rounded-full px-2 py-1 border">
+                      Impact: <span className="font-semibold">{impactPercentage.toFixed(1)}% of total</span>
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="text-sm space-y-1">
+                  <p className={textColor}>
+                    <span className="font-medium">Primary AI Benefits:</span> {dept.headcount > 25 ? 'Scale automation across large team' : 'Enhance individual productivity'}
+                  </p>
+                  <p className={textColor}>
+                    <span className="font-medium">Efficiency Gain:</span> {dept.efficiencyGain}% time savings per employee
+                  </p>
+                  <p className={textColor}>
+                    <span className="font-medium">Time Reclaimed:</span> {Math.round(hoursSaved).toLocaleString()} hours ({(hoursSaved / dept.headcount).toFixed(0)} hours per team member)
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
       
       {/* Calculation Methodology */}
@@ -253,6 +378,74 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </div>
       </div>
       
+      {/* Implementation Strategy - NEW SECTION */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Implementation Strategy Recommendations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="border rounded-lg p-4 bg-blue-50">
+            <h3 className="font-medium text-blue-800 mb-2">Phase 1: Preparation (1-2 months)</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-blue-700">
+              <li>Conduct AI readiness assessment</li>
+              <li>Identify high-impact use cases in {departments[0]?.name || 'key departments'}</li>
+              <li>Establish baseline metrics and KPIs</li>
+              <li>Develop staff training plan</li>
+              <li>Allocate implementation budget</li>
+            </ul>
+          </div>
+          
+          <div className="border rounded-lg p-4 bg-green-50">
+            <h3 className="font-medium text-green-800 mb-2">Phase 2: Pilot Implementation (2-3 months)</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-green-700">
+              <li>Deploy AI solutions in selected departments</li>
+              <li>Train pilot team members ({adoptionRate}% adoption target)</li>
+              <li>Measure initial efficiency improvements</li>
+              <li>Gather user feedback and refine approach</li>
+              <li>Document early wins and challenges</li>
+            </ul>
+          </div>
+          
+          <div className="border rounded-lg p-4 bg-amber-50">
+            <h3 className="font-medium text-amber-800 mb-2">Phase 3: Expansion (3-6 months)</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-amber-700">
+              <li>Scale successful AI implementations organization-wide</li>
+              <li>Extend training to all departments</li>
+              <li>Integrate AI tools with existing workflows</li>
+              <li>Address any adoption barriers</li>
+              <li>Track and report on ROI progress</li>
+            </ul>
+          </div>
+          
+          <div className="border rounded-lg p-4 bg-indigo-50">
+            <h3 className="font-medium text-indigo-800 mb-2">Phase 4: Optimization (6+ months)</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-indigo-700">
+              <li>Continuous improvement of AI implementations</li>
+              <li>Identify additional use cases</li>
+              <li>Maximize staff adoption rates</li>
+              <li>Advanced training for power users</li>
+              <li>Regular reporting on ROI achievement</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+          <h3 className="font-medium text-gray-800 mb-2">Key Success Factors</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div>
+              <h4 className="font-medium text-teal-700">Leadership Support</h4>
+              <p className="text-gray-700">Executive sponsorship is crucial for successful AI adoption across departments.</p>
+            </div>
+            <div>
+              <h4 className="font-medium text-teal-700">User Training</h4>
+              <p className="text-gray-700">Comprehensive training programs ensure staff can effectively leverage AI tools.</p>
+            </div>
+            <div>
+              <h4 className="font-medium text-teal-700">Data Readiness</h4>
+              <p className="text-gray-700">Clean, organized data is essential for AI to deliver accurate results.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Implementation Parameters */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-teal-700 mb-4">Implementation Parameters</h2>
@@ -293,6 +486,56 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
             <li>Lower adoption rates (&lt;50%) significantly reduce overall impact</li>
             <li>{industry.name} industry typically reaches maturity in {industry.maturityTimeline || "12-18 months"}</li>
           </ul>
+        </div>
+      </div>
+      
+      {/* Risk Factors and Mitigation - NEW SECTION */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Risk Assessment & Mitigation</h2>
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border p-2 text-left">Risk Factor</th>
+              <th className="border p-2 text-left">Potential Impact</th>
+              <th className="border p-2 text-left">Mitigation Strategy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border p-2">Low user adoption</td>
+              <td className="border p-2">Reduced ROI, underutilized investment</td>
+              <td className="border p-2">Comprehensive training, ongoing support, clear communication of benefits</td>
+            </tr>
+            <tr>
+              <td className="border p-2">Data quality issues</td>
+              <td className="border p-2">Poor AI performance, inaccurate results</td>
+              <td className="border p-2">Data cleansing, standardization, and governance processes</td>
+            </tr>
+            <tr>
+              <td className="border p-2">Integration challenges</td>
+              <td className="border p-2">Workflow disruption, technical barriers</td>
+              <td className="border p-2">Phased implementation, compatibility testing, IT support resources</td>
+            </tr>
+            <tr>
+              <td className="border p-2">Skill gaps</td>
+              <td className="border p-2">Ineffective use of AI tools</td>
+              <td className="border p-2">Tailored training programs, identifying champions in each department</td>
+            </tr>
+            <tr>
+              <td className="border p-2">Scope creep</td>
+              <td className="border p-2">Budget overruns, delayed implementation</td>
+              <td className="border p-2">Clear project boundaries, phased approach, regular progress reviews</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div className="mt-4 bg-amber-50 p-3 rounded-lg">
+          <h3 className="font-medium text-amber-800 mb-1">Risk Impact on ROI</h3>
+          <p className="text-sm text-amber-700">
+            The ROI calculations in this report assume successful mitigation of these risks. 
+            Actual results may vary based on implementation effectiveness and risk management.
+            We recommend building in a 15-20% contingency in both time and budget allocations.
+          </p>
         </div>
       </div>
       
