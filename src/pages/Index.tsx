@@ -23,10 +23,18 @@ export default function Index() {
         <div className="absolute right-0 top-0">
           {reportData && <PdfExportButton reportData={reportData} />}
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">AI ROI Calculator</h1>
-        <p className="text-gray-500 mt-2">
-          Calculate the potential return on investment for implementing AI in your organization
-        </p>
+        
+        <div className="flex flex-col items-center">
+          <img 
+            src="/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png" 
+            alt="Autosolutions.ai Logo" 
+            className="w-32 mb-4"
+          />
+          <h1 className="text-3xl font-bold tracking-tight">AI ROI Calculator</h1>
+          <p className="text-gray-500 mt-2">
+            Calculate the potential return on investment for implementing AI in your organization
+          </p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mb-8">
