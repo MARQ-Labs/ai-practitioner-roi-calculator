@@ -11,14 +11,17 @@ export const getIndustryROIData = (industryId: string): ROIData => {
       firstYearROI: "200-300%",
       headcountEquivalent: "10-20%",
       averageROI: "5.9%",
-      leadersROI: "13.00%",
+      leadersROI: "13.00%", // Ensuring proper format
       maturityTimeline: "17 months"
     };
   }
 
+  // Ensure we have a valid base ROI value
   const overallROI = industry.overallROI || 30;
-  const gptROI = (overallROI * 3.7).toFixed(2); // Based on 370% (3.7x) average for GenAI
-  const leadersROI = (overallROI * 2.5).toFixed(2); // Based on industry leaders achieving 2.5x better results
+  
+  // Format all numeric values as strings with fixed decimal places
+  const gptROIValue = (overallROI * 3.7).toFixed(2);
+  const leadersROIValue = (overallROI * 2.5).toFixed(2);
   const maturityTimeline = industry.maturityTimeline || "17 months";
   
   return {
@@ -26,7 +29,7 @@ export const getIndustryROIData = (industryId: string): ROIData => {
     firstYearROI: `${overallROI*2}-${overallROI*3}%`,
     headcountEquivalent: `${Math.round(overallROI/3)}-${Math.round(overallROI/2)}%`,
     averageROI: `${overallROI.toFixed(2)}%`,
-    leadersROI: `${leadersROI}%`,
+    leadersROI: `${leadersROIValue}%`, // Always use the formatted value
     maturityTimeline: maturityTimeline
   };
 };
