@@ -51,19 +51,19 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex">
           <div className="flex-1">
             <h2 className="font-semibold text-teal-800">{currentIndustry.name}</h2>
-            <p className="text-sm text-teal-600">{currentIndustry.description}</p>
-            <div className="mt-2 text-sm text-teal-700 flex flex-wrap gap-x-4 gap-y-1">
-              <div>
-                <span className="font-medium">Industry Average ROI: </span>
-                <span className="font-bold">{currentIndustry.overallROI}%</span>
+            <p className="text-sm text-teal-600 mb-2">{currentIndustry.description}</p>
+            <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-teal-700">Industry Average ROI:</span>
+                <span className="text-base font-bold text-teal-800">{currentIndustry.overallROI}%</span>
               </div>
-              <div>
-                <span className="font-medium">AI Leaders ROI: </span>
-                <span className="font-bold">{roiData.leadersROI}</span>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-teal-700">AI Leaders ROI:</span>
+                <span className="text-base font-bold text-teal-800">{roiData.leadersROI}</span>
               </div>
-              <div>
-                <span className="font-medium">Maturity Timeline: </span>
-                <span className="font-bold">{roiData.maturityTimeline}</span>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-teal-700">Maturity Timeline:</span>
+                <span className="text-base font-bold text-teal-800">{roiData.maturityTimeline}</span>
               </div>
             </div>
           </div>
