@@ -9,7 +9,7 @@ interface ReportContentProps {
 }
 
 const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
-  const { industry, totalImpact, departments, timeHorizon, adoptionRate, customCost, date } = data;
+  const { industry, totalImpact, departments, timeHorizon, adoptionRate, customCost, date, costItems } = data;
   
   return (
     <div className="p-8 max-w-4xl mx-auto bg-white" id="pdf-content">
@@ -58,6 +58,72 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
               }
             </p>
             <p className="text-sm text-green-700">Return on investment</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Investment Cost Breakdown - NEW SECTION */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Investment Cost Breakdown</h2>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-700 mb-3">
+            The total investment required for implementing AI solutions in your organization is <span className="font-semibold">{formatCurrency(customCost || (totalImpact.financialImpact * 0.3))}</span>.
+            This investment is broken down as follows:
+          </p>
+          
+          {costItems && costItems.length > 0 ? (
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border p-2 text-left">Cost Item</th>
+                  <th className="border p-2 text-left">Type</th>
+                  <th className="border p-2 text-right">Amount</th>
+                  <th className="border p-2 text-right">Total Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {costItems.map((item, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="border p-2">{item.name}</td>
+                    <td className="border p-2">{item.type === "one-time" ? "One-time" : "Monthly"}</td>
+                    <td className="border p-2 text-right">{formatCurrency(item.cost)}</td>
+                    <td className="border p-2 text-right">
+                      {item.type === "one-time" 
+                        ? formatCurrency(item.cost)
+                        : formatCurrency(item.cost * timeHorizon)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="bg-gray-100 font-semibold">
+                  <td className="border p-2" colSpan={3}>Total Investment</td>
+                  <td className="border p-2 text-right">{formatCurrency(customCost || (totalImpact.financialImpact * 0.3))}</td>
+                </tr>
+              </tfoot>
+            </table>
+          ) : (
+            <div className="bg-amber-50 p-3 rounded-lg">
+              <p className="text-amber-800">
+                Default investment calculation: 30% of projected financial impact ({formatCurrency(totalImpact.financialImpact * 0.3)})
+              </p>
+              <p className="text-xs text-amber-700 mt-1">
+                This is an industry-standard estimate for AI implementation costs.
+                Use the custom cost calculator for a more detailed breakdown.
+              </p>
+            </div>
+          )}
+          
+          <div className="mt-3 bg-blue-50 p-3 rounded-lg">
+            <h4 className="font-medium text-blue-800 mb-1">Investment Returns</h4>
+            <ul className="list-disc list-inside space-y-1 text-sm text-blue-700">
+              <li>Projected ROI: {customCost 
+                ? `${((totalImpact.financialImpact / customCost) * 100 - 100).toFixed(2)}%`
+                : `${((totalImpact.financialImpact / (totalImpact.financialImpact * 0.3)) * 100 - 100).toFixed(2)}%`}
+              </li>
+              <li>Net financial benefit: {formatCurrency(totalImpact.financialImpact - (customCost || (totalImpact.financialImpact * 0.3)))}</li>
+              <li>Total value generated: {formatCurrency(totalImpact.financialImpact)}</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -111,7 +177,7 @@ const ReportContent: React.FC<ReportContentProps> = ({ data }) => {
         </table>
       </div>
       
-      {/* NEW SECTION: Calculation Methodology */}
+      {/* Calculation Methodology */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-teal-700 mb-4">Calculation Methodology</h2>
         <div className="bg-gray-50 p-4 rounded-lg mb-4">

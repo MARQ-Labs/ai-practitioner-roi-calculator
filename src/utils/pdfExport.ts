@@ -1,5 +1,5 @@
 
-import { TotalImpact, Department, Industry, ROIData } from "@/models/calculator";
+import { TotalImpact, Department, Industry, ROIData, CostItem } from "@/models/calculator";
 import { formatCurrency } from "@/lib/utils";
 
 export interface ReportData {
@@ -10,6 +10,7 @@ export interface ReportData {
   adoptionRate: number;
   totalImpact: TotalImpact;
   customCost?: number;
+  costItems?: CostItem[];
   date: string;
 }
 
@@ -19,7 +20,8 @@ export function formatReportData(
   timeHorizon: number,
   adoptionRate: number,
   totalImpact: TotalImpact,
-  customCost?: number
+  customCost?: number,
+  costItems?: CostItem[]
 ): ReportData {
   return {
     title: `${industry.name} AI ROI Report`,
@@ -29,6 +31,7 @@ export function formatReportData(
     adoptionRate,
     totalImpact,
     customCost,
+    costItems,
     date: new Date().toLocaleDateString()
   };
 }

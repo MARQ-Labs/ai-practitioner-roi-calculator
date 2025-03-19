@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +18,7 @@ interface CustomCostCalculatorProps {
   totalBenefit: number;
   timeHorizon: number;
   adoptionRate: number;
-  onCostChange?: (cost: number) => void;
+  onCostChange?: (cost: number, items?: CostItem[]) => void;
 }
 
 const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({ 
@@ -79,9 +80,9 @@ const CustomCostCalculator: React.FC<CustomCostCalculatorProps> = ({
   // Notify parent component when costs change
   useEffect(() => {
     if (onCostChange) {
-      onCostChange(totalCustomCost);
+      onCostChange(totalCustomCost, costItems);
     }
-  }, [totalCustomCost, onCostChange]);
+  }, [totalCustomCost, costItems, onCostChange]);
 
   // Handle adding a new cost item
   const addCostItem = () => {

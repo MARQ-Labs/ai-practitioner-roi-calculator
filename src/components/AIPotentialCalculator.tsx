@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
 import { calculateTotalImpact } from "@/services/calculatorService";
-import { Department } from "@/models/calculator";
+import { Department, CostItem } from "@/models/calculator";
 import { formatReportData } from "@/utils/pdfExport";
 
 // Import refactored components
@@ -23,6 +24,7 @@ const AIPotentialCalculator: React.FC = () => {
   const [selectedIndustry, setSelectedIndustry] = useState("technology");
   const [customDepartments, setCustomDepartments] = useState<Department[]>([]);
   const [customCost, setCustomCost] = useState<number>(50000);
+  const [costItems, setCostItems] = useState<CostItem[]>([]);
   const { toast } = useToast();
   
   // Get current industry data
@@ -47,7 +49,8 @@ const AIPotentialCalculator: React.FC = () => {
     timeHorizon,
     adoptionRate,
     totalImpact,
-    customCost
+    customCost,
+    costItems
   );
 
   useEffect(() => {
@@ -70,8 +73,11 @@ const AIPotentialCalculator: React.FC = () => {
     setCustomDepartments(departments);
   };
   
-  const handleCustomCostChange = (cost: number) => {
+  const handleCustomCostChange = (cost: number, items?: CostItem[]) => {
     setCustomCost(cost);
+    if (items) {
+      setCostItems(items);
+    }
   };
   
   return (
