@@ -63,23 +63,40 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
   // Calculate ROI consistently with other components
   const calculatedROI = calculateROI(investment, totalBenefit);
   
-  // Format ROI values safely
-  const formatROI = (roi: number) => {
+  // Format ROI values safely - ensuring we always return a properly formatted string
+  const formatROI = (roi: number): string => {
     if (isNaN(roi) || roi === Infinity || roi === -Infinity) {
       return "0.00%";
     }
     return roi.toFixed(2) + "%";
   };
   
+  // Safely extract numeric value from ROI percentage string
+  const extractNumericValue = (roiString: string | undefined): number => {
+    if (!roiString) return 0;
+    const numericValue = parseFloat(roiString.replace('%', ''));
+    return isNaN(numericValue) ? 0 : numericValue;
+  };
+  
+  // Always ensure we have default ROI data if props are missing
+  const safeROIData = roiData || {
+    timeToValue: "3-6 months",
+    firstYearROI: "200-300%",
+    headcountEquivalent: "10-20%",
+    averageROI: "5.9%", 
+    leadersROI: "13.00%",
+    maturityTimeline: "17 months"
+  };
+  
   // For leaders ROI calculation - ensure it's always properly formatted
-  // Extract the numeric value from the leaders ROI string and ensure it's valid
-  const leaderROIString = roiData?.leadersROI || "0.00%";
-  const leaderROIValue = parseFloat(leaderROIString.replace('%', ''));
+  const leaderROIValue = extractNumericValue(safeROIData.leadersROI);
   
   // Calculate the adjusted leaders ROI based on time horizon and adoption rate
-  const adjustedLeadersROI = !isNaN(leaderROIValue) && leaderROIValue > 0
-    ? ((leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100)).toFixed(2) + "%")
-    : "0.00%";
+  let adjustedLeadersROI = "0.00%"; // Default fallback
+  if (leaderROIValue > 0) {
+    const adjustedValue = leaderROIValue * (timeHorizon / 12) * (adoptionRate / 100);
+    adjustedLeadersROI = adjustedValue.toFixed(2) + "%";
+  }
 
   // Add debug to help identify problems
   console.log("ROI Analysis Tab Data:", {
@@ -90,9 +107,10 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
     totalBenefit,
     calculatedROI,
     hasValidDepartments,
-    leadersROI: roiData?.leadersROI,
+    leadersROI: safeROIData.leadersROI,
     leaderROIValue,
-    adjustedLeadersROI
+    adjustedLeadersROI,
+    safeROIData
   });
 
   // Show toast when there's an issue with timeline data
@@ -137,7 +155,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                 <div className="space-y-3">
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">{timeHorizon}-Month Projected ROI:</span>
-                    <span className={`font-bold ${!isNaN(calculatedROI) && calculatedROI < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
+                    <span className={`font-bold ${calculatedROI < 0 ? 'text-amber-600' : 'text-teal-700'}`}>
                       {formatROI(calculatedROI)}
                     </span>
                   </div>
@@ -151,11 +169,11 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Time to Value:</span>
-                    <span className="font-bold text-teal-700">{roiData?.timeToValue || "3-6 months"}</span>
+                    <span className="font-bold text-teal-700">{safeROIData.timeToValue || "3-6 months"}</span>
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Maturity Timeline:</span>
-                    <span className="font-bold text-teal-700">{roiData?.maturityTimeline || "17 months"}</span>
+                    <span className="font-bold text-teal-700">{safeROIData.maturityTimeline || "17 months"}</span>
                   </div>
                 </div>
               </div>
@@ -167,7 +185,7 @@ const ROIAnalysisTab: React.FC<ROIAnalysisTabProps> = ({
                   <li>Ensure high data quality (accuracy currently at 54.6%)</li>
                   <li>Implement across multiple departments simultaneously</li>
                   <li>Secure executive leadership involvement in governance</li>
-                  <li>Plan for {roiData?.maturityTimeline || "17 months"} to reach full maturity</li>
+                  <li>Plan for {safeROIData.maturityTimeline || "17 months"} to reach full maturity</li>
                 </ul>
               </div>
             </div>

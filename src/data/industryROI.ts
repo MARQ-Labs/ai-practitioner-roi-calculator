@@ -11,7 +11,7 @@ export const getIndustryROIData = (industryId: string): ROIData => {
       firstYearROI: "200-300%",
       headcountEquivalent: "10-20%",
       averageROI: "5.9%",
-      leadersROI: "13.00%", // Ensuring proper format
+      leadersROI: "13.00%", 
       maturityTimeline: "17 months"
     };
   }
@@ -19,17 +19,25 @@ export const getIndustryROIData = (industryId: string): ROIData => {
   // Ensure we have a valid base ROI value
   const overallROI = industry.overallROI || 30;
   
-  // Format all numeric values as strings with fixed decimal places
-  const gptROIValue = (overallROI * 3.7).toFixed(2);
-  const leadersROIValue = (overallROI * 2.5).toFixed(2);
+  // Format all numeric values with proper percentage formatting
+  const monthsMin = Math.max(1, Math.round(overallROI/10));
+  const monthsMax = Math.max(2, Math.round(overallROI/6));
+  const headcountMin = Math.max(1, Math.round(overallROI/3));
+  const headcountMax = Math.max(2, Math.round(overallROI/2));
+  const firstYearMin = Math.max(10, overallROI*2);
+  const firstYearMax = Math.max(20, overallROI*3);
+  
+  // Always ensure values have .00 precision for consistency
+  const averageROIValue = `${overallROI.toFixed(2)}%`;
+  const leadersROIValue = `${(overallROI * 2.5).toFixed(2)}%`;
   const maturityTimeline = industry.maturityTimeline || "17 months";
   
   return {
-    timeToValue: `${Math.round(overallROI/10)}-${Math.round(overallROI/6)} months`,
-    firstYearROI: `${overallROI*2}-${overallROI*3}%`,
-    headcountEquivalent: `${Math.round(overallROI/3)}-${Math.round(overallROI/2)}%`,
-    averageROI: `${overallROI.toFixed(2)}%`,
-    leadersROI: `${leadersROIValue}%`, // Always use the formatted value
+    timeToValue: `${monthsMin}-${monthsMax} months`,
+    firstYearROI: `${firstYearMin}-${firstYearMax}%`,
+    headcountEquivalent: `${headcountMin}-${headcountMax}%`,
+    averageROI: averageROIValue,
+    leadersROI: leadersROIValue,
     maturityTimeline: maturityTimeline
   };
 };
