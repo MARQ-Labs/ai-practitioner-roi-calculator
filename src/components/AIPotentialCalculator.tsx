@@ -17,6 +17,7 @@ import PageFooter from "./calculator/PageFooter";
 import DepartmentEditor from "./DepartmentEditor";
 import CustomCostCalculator from "./calculator/CustomCostCalculator";
 import PdfExportButton from "./pdf/PdfExportButton";
+import AITypeSelector, { AITypeOption } from "./calculator/AITypeSelector";
 
 const AIPotentialCalculator: React.FC = () => {
   // Basic state
@@ -27,6 +28,7 @@ const AIPotentialCalculator: React.FC = () => {
   const [customDepartments, setCustomDepartments] = useState<Department[]>([]);
   const [customCost, setCustomCost] = useState<number>(50000);
   const [costItems, setCostItems] = useState<CostItem[]>([]);
+  const [aiType, setAIType] = useState<AITypeOption>("general");
   const { toast } = useToast();
   
   // Get current industry data
@@ -81,6 +83,15 @@ const AIPotentialCalculator: React.FC = () => {
       setCostItems(items);
     }
   };
+
+  const handleAITypeChange = (type: AITypeOption) => {
+    setAIType(type);
+    toast({
+      title: `AI Type changed to ${type}`,
+      description: "Your implementation focus has been updated",
+      duration: 3000,
+    });
+  };
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
@@ -104,6 +115,12 @@ const AIPotentialCalculator: React.FC = () => {
           roiData={roiData}
         />
       </div>
+      
+      {/* AI Type Selector - New Component */}
+      <AITypeSelector 
+        selectedType={aiType}
+        onTypeChange={handleAITypeChange}
+      />
       
       {/* Department Editor */}
       <div className="mb-8 animate-fade-in">
