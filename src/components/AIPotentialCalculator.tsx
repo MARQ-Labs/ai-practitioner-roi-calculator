@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
@@ -122,7 +123,6 @@ const AIPotentialCalculator: React.FC = () => {
         industryId={selectedIndustry}
         industry={currentIndustry}
         roiData={roiData}
-        customCost={customCost}
       />
       
       {/* Footer */}

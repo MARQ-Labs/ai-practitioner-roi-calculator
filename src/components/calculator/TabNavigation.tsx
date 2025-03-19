@@ -8,7 +8,6 @@ import {
 } from "@/models/calculator";
 import DepartmentImpactTab from "./tabContent/DepartmentImpactTab";
 import EfficiencyGainsTab from "./tabContent/EfficiencyGainsTab";
-import ROIAnalysisTab from "./tabContent/ROIAnalysisTab";
 import IndustryInsightsTab from "./tabContent/IndustryInsightsTab";
 
 interface TabNavigationProps {
@@ -32,7 +31,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   industryId,
   industry,
   roiData,
-  customCost
 }) => {
   return (
     <div className="mb-8">
@@ -43,9 +41,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           </TabsTrigger>
           <TabsTrigger value="efficiency" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
             Efficiency
-          </TabsTrigger>
-          <TabsTrigger value="roi" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
-            ROI Analysis
           </TabsTrigger>
           <TabsTrigger value="industry" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-900 transition-all duration-200 rounded-lg px-4 py-2 text-sm font-medium">
             Industry Insights
@@ -69,16 +64,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             timeHorizon={timeHorizon}
             industryId={industryId}
             industryName={industry.name}
-          />
-        </TabsContent>
-        
-        <TabsContent value="roi" className="animate-slide-in-right">
-          <ROIAnalysisTab 
-            industry={industry} 
-            roiData={roiData} 
-            timeHorizon={timeHorizon}
-            adoptionRate={adoptionRate}
-            customCost={customCost}
           />
         </TabsContent>
         
