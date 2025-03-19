@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -88,11 +87,6 @@ const AIPotentialCalculator: React.FC = () => {
       <div className="relative mb-8">
         <div className="flex justify-end mb-4">
           <div className="flex flex-wrap gap-3">
-            <Link to="/benchmark">
-              <Button variant="outline" size="sm" className="whitespace-nowrap">
-                Benchmark Comparison
-              </Button>
-            </Link>
             <PdfExportButton reportData={reportData} />
           </div>
         </div>
