@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card";
 import { Department } from "@/models/calculator";
@@ -32,6 +31,16 @@ const DepartmentImpactTab: React.FC<DepartmentImpactTabProps> = ({
           {departments.map((dept) => {
             const impact = calculateDepartmentImpact(dept, adoptionRate, timeHorizon, industryId);
             
+            // Format ROI display with proper rounding to 2 decimal places
+            const roiDisplay = () => {
+              // If ROI is defined and not NaN, display it with 2 decimal places
+              if (impact.roi !== undefined && !isNaN(impact.roi)) {
+                return <span className="text-sm font-medium text-green-600">ROI: {impact.roi.toFixed(2)}%</span>;
+              }
+              // Otherwise show calculating indicator
+              return <span className="text-sm font-medium text-amber-600">ROI: Calculating...</span>;
+            };
+            
             return (
               <div key={dept.id} className="border-l-4 border-blue-400 pl-4 py-2 transition-all duration-300 hover:bg-blue-50 rounded-r-md">
                 <div className="flex justify-between items-center">
@@ -40,10 +49,7 @@ const DepartmentImpactTab: React.FC<DepartmentImpactTabProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <p className="text-sm text-gray-600">Department details:</p>
-                  {impact.roi !== undefined && !isNaN(impact.roi) ? 
-                    <span className="text-sm font-medium text-green-600">ROI: {impact.roi.toFixed(2)}%</span> : 
-                    <span className="text-sm font-medium text-amber-600">ROI: Calculating...</span>
-                  }
+                  {roiDisplay()}
                 </div>
                 <ul className="text-sm list-disc pl-5 mt-1">
                   <li>Staff: {dept.headcount} team members</li>
