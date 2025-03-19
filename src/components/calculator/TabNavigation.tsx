@@ -31,6 +31,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   industryId,
   industry,
   roiData,
+  customCost
 }) => {
   return (
     <div className="mb-8">

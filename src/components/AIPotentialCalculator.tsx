@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { industryData, getIndustryROIData } from "@/data/industryData";
 import { calculateTotalImpact } from "@/services/calculatorService";
 import { Department } from "@/models/calculator";
+import { formatReportData } from "@/utils/pdfExport";
 
 // Import refactored components
 import Header from "./calculator/Header";
@@ -13,6 +13,7 @@ import TabNavigation from "./calculator/TabNavigation";
 import PageFooter from "./calculator/PageFooter";
 import DepartmentEditor from "./DepartmentEditor";
 import CustomCostCalculator from "./calculator/CustomCostCalculator";
+import PdfExportButton from "./pdf/PdfExportButton";
 
 const AIPotentialCalculator: React.FC = () => {
   // Basic state
@@ -39,12 +40,20 @@ const AIPotentialCalculator: React.FC = () => {
   // Calculate total impact
   const totalImpact = calculateTotalImpact(currentDepartments, adoptionRate, timeHorizon, selectedIndustry);
 
-  // Reset custom departments when industry changes
+  // Prepare report data for PDF export
+  const reportData = formatReportData(
+    currentIndustry,
+    currentDepartments,
+    timeHorizon,
+    adoptionRate,
+    totalImpact,
+    customCost
+  );
+
   useEffect(() => {
     setCustomDepartments([]);
   }, [selectedIndustry]);
 
-  // Notify on industry change
   useEffect(() => {
     toast({
       title: `Industry changed to ${currentIndustry.name}`,
@@ -53,30 +62,30 @@ const AIPotentialCalculator: React.FC = () => {
     });
   }, [selectedIndustry, currentIndustry.name, toast]);
 
-  // Handle industry change
   const handleIndustryChange = (industry: string) => {
     setSelectedIndustry(industry);
   };
 
-  // Handle departments change
   const handleDepartmentsChange = (departments: Department[]) => {
     setCustomDepartments(departments);
   };
   
-  // Handle custom cost change
   const handleCustomCostChange = (cost: number) => {
     setCustomCost(cost);
   };
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
-      {/* Header */}
-      <Header 
-        selectedIndustry={selectedIndustry} 
-        currentIndustry={currentIndustry}
-        handleIndustryChange={handleIndustryChange}
-        roiData={roiData}
-      />
+      {/* Header with PDF Export Button */}
+      <div className="flex justify-between items-start mb-8">
+        <Header 
+          selectedIndustry={selectedIndustry} 
+          currentIndustry={currentIndustry}
+          handleIndustryChange={handleIndustryChange}
+          roiData={roiData}
+        />
+        <PdfExportButton reportData={reportData} />
+      </div>
       
       {/* Department Editor */}
       <div className="mb-8 animate-fade-in">
