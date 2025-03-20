@@ -2,6 +2,7 @@
 export interface MaturityQuestion {
   id: string;
   text: string;
+  explanation: string;
   category: MaturityCategory;
   options: MaturityOption[];
 }

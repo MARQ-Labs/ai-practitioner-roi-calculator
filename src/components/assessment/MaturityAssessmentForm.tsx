@@ -23,6 +23,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { maturityQuestions, getMaturityLevel, getRecommendations } from "@/data/assessmentQuestions";
 import { MaturityCategory, MaturityResult } from "@/models/assessment";
 import MaturityResultsDisplay from "./MaturityResultsDisplay";
+import { InfoIcon } from "lucide-react";
 
 const MaturityAssessmentForm = () => {
   const [result, setResult] = useState<MaturityResult | null>(null);
@@ -122,6 +123,12 @@ const MaturityAssessmentForm = () => {
               <CardDescription>
                 Category: {question.category}
               </CardDescription>
+              <div className="mt-2 p-3 bg-muted/50 rounded-md">
+                <div className="flex gap-2">
+                  <InfoIcon className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
+                  <p className="text-sm text-muted-foreground">{question.explanation}</p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <FormField

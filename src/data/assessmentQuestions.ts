@@ -1,9 +1,11 @@
+
 import { MaturityCategory, MaturityQuestion, MaturityLevel } from "@/models/assessment";
 
 export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "strategy1",
     text: "How well-defined is your organization's AI strategy?",
+    explanation: "This question asks about whether you have a formal plan for how your organization will use AI. A well-defined strategy means having clear goals, timelines, and resources allocated for AI initiatives, rather than pursuing AI projects on an ad-hoc basis.",
     category: "Strategy & Roadmap",
     options: [
       {
@@ -31,6 +33,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "strategy2",
     text: "How does your organization prioritize AI initiatives?",
+    explanation: "This question is about how you decide which AI projects to pursue first. Organizations with mature approaches have a systematic way to evaluate potential AI projects based on factors like business value, feasibility, and strategic alignment, rather than just starting projects based on enthusiasm or trends.",
     category: "Strategy & Roadmap",
     options: [
       {
@@ -58,6 +61,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "data1",
     text: "How would you describe your organization's data quality and accessibility?",
+    explanation: "This question asks about how good your data is and how easy it is to access. AI systems rely on data to learn and make predictions. High-quality data is accurate, complete, and consistent. Accessible data means authorized people can easily find and use the data they need when they need it.",
     category: "Data Readiness",
     options: [
       {
@@ -85,6 +89,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "data2",
     text: "What level of data governance does your organization maintain?",
+    explanation: "This question is about the rules and processes you have for managing data. Data governance includes policies about who can access data, how data quality is maintained, who is responsible for different datasets, and how data privacy and security are ensured.",
     category: "Data Readiness",
     options: [
       {
@@ -112,6 +117,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "tech1",
     text: "How mature is your AI infrastructure and tooling?",
+    explanation: "This question asks about the technical foundation you have for AI work. This includes the hardware (like servers or cloud resources), software tools, and development environments your team uses to build and deploy AI solutions.",
     category: "Technology Infrastructure",
     options: [
       {
@@ -139,6 +145,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "tech2",
     text: "How integrated is AI with your existing systems?",
+    explanation: "This question is about how well your AI solutions connect with your other business software and processes. Fully integrated AI works seamlessly with your existing tools, rather than functioning as separate, stand-alone applications that require manual data transfers.",
     category: "Technology Infrastructure",
     options: [
       {
@@ -166,6 +173,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "talent1",
     text: "How would you describe your organization's AI talent and skills?",
+    explanation: "This question asks about your team's expertise in AI. This includes specialist roles like data scientists and machine learning engineers, as well as general AI knowledge among other employees who might work with AI systems or their outputs.",
     category: "Talent & Skills",
     options: [
       {
@@ -193,6 +201,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "talent2",
     text: "What level of AI training does your organization provide?",
+    explanation: "This question is about how you build AI knowledge within your organization. This could include formal training programs, workshops, on-the-job learning opportunities, and resources to help staff at all levels understand AI concepts relevant to their roles.",
     category: "Talent & Skills",
     options: [
       {
@@ -220,6 +229,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "governance1",
     text: "How mature are your AI ethics and governance practices?",
+    explanation: "This question asks about your approach to ensuring AI is used responsibly. This includes policies about fairness, transparency, privacy, and safety in AI systems, as well as processes to enforce these policies and address ethical issues that arise.",
     category: "Governance & Ethics",
     options: [
       {
@@ -247,6 +257,7 @@ export const maturityQuestions: MaturityQuestion[] = [
   {
     id: "governance2",
     text: "How does your organization monitor and manage AI risks?",
+    explanation: "This question is about identifying and addressing potential problems with AI systems. Risks might include errors in AI outputs, security vulnerabilities, compliance issues, or unintended consequences of AI use. Mature organizations have systematic ways to identify, assess, and mitigate these risks.",
     category: "Governance & Ethics",
     options: [
       {
