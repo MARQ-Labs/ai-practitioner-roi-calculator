@@ -48,7 +48,7 @@ const Dashboard = () => {
               Generate detailed forecasts of financial impact, time savings, and increased team capacity for your AI initiatives.
             </p>
             <Link 
-              to="/" 
+              to="/calculator" 
               className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
               Open Calculator
