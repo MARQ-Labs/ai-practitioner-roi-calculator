@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import BenchmarkComparison from "./pages/BenchmarkComparison";
 import CaseStudyLibrary from "./pages/CaseStudyLibrary";
 import AIMaturityAssessment from "./pages/AIMaturityAssessment";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/calculator" element={<Index />} />
           <Route path="/benchmark" element={<BenchmarkComparison />} />
           <Route path="/case-studies" element={<CaseStudyLibrary />} />
           <Route path="/maturity-assessment" element={<AIMaturityAssessment />} />
