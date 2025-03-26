@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface MsaFormData {
@@ -17,11 +16,6 @@ interface MsaFormData {
   governingLaw: string;
   arbitrationBody: string;
   survivingSections: string;
-  // Branding information
-  companyLogo?: string;
-  companyName?: string;
-  companyTagline?: string;
-  brandColor?: string;
 }
 
 interface MsaDocumentProps {
@@ -29,34 +23,9 @@ interface MsaDocumentProps {
 }
 
 const MsaDocument: React.FC<MsaDocumentProps> = ({ data }) => {
-  // Define a default or brand color based on the data
-  const brandColor = data.brandColor || "#0ea5e9"; // Default to a blue color if not provided
-  
   return (
     <div className="bg-white p-8 font-sans" style={{ maxWidth: "800px", margin: "0 auto" }}>
       <div className="text-center mb-8">
-        {data.companyLogo && (
-          <div className="flex justify-center mb-2">
-            <img 
-              src={data.companyLogo} 
-              alt={`${data.companyName || 'Company'} Logo`} 
-              className="max-h-32 max-w-[280px] object-contain"
-            />
-          </div>
-        )}
-        
-        {data.companyName && (
-          <p className="text-lg font-semibold mb-1" style={{ color: brandColor }}>
-            {data.companyName}
-          </p>
-        )}
-        
-        {data.companyTagline && (
-          <p className="text-sm text-gray-600 mb-4 italic">
-            {data.companyTagline}
-          </p>
-        )}
-        
         <h1 className="text-2xl font-bold mb-2">
           MASTER SERVICES AGREEMENT FOR AI SERVICES
         </h1>
@@ -282,7 +251,7 @@ const MsaDocument: React.FC<MsaDocumentProps> = ({ data }) => {
       </div>
 
       <div className="text-center text-xs text-gray-500 mt-8 pt-4 border-t">
-        <p>This Master Services Agreement template is designed for AI service providers | © {data.companyName || data.serviceProviderName || new Date().getFullYear()}</p>
+        <p>This Master Services Agreement template is designed for AI service providers | © {new Date().getFullYear()}</p>
       </div>
     </div>
   );

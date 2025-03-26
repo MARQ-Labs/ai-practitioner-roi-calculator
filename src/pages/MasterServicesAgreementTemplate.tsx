@@ -35,19 +35,11 @@ const MasterServicesAgreementTemplate = () => {
     governingLaw: "",
     arbitrationBody: "",
     survivingSections: "5, 6, 7, 9, 10, and 11",
-    companyName: "",
-    companyLogo: "",
-    companyTagline: "",
-    brandColor: "#0ea5e9",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleLogoChange = (logoUrl: string) => {
-    setFormData((prev) => ({ ...prev, companyLogo: logoUrl }));
   };
 
   return (
@@ -63,21 +55,13 @@ const MasterServicesAgreementTemplate = () => {
         </div>
         
         <div className="absolute right-0 top-0">
-          <MsaExportButton formData={formData} onLogoChange={handleLogoChange} />
+          <MsaExportButton formData={formData} />
         </div>
         
         <div className="flex flex-col items-center">
-          {formData.companyLogo ? (
-            <img 
-              src={formData.companyLogo} 
-              alt="Company Logo" 
-              className="w-32 mb-4 object-contain"
-            />
-          ) : (
-            <div className="w-32 h-32 mb-4 flex items-center justify-center border border-dashed border-gray-300 rounded-md">
-              <FileText className="h-10 w-10 text-gray-400" />
-            </div>
-          )}
+          <div className="w-32 h-32 mb-4 flex items-center justify-center">
+            <FileText className="h-16 w-16 text-primary" />
+          </div>
           <h1 className="text-3xl font-bold tracking-tight">Master Services Agreement Template</h1>
           <p className="text-gray-500 mt-2 max-w-2xl">
             Create a customized Master Services Agreement for your AI services business
@@ -100,10 +84,9 @@ const MasterServicesAgreementTemplate = () => {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="parties" className="space-y-4">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="parties">Parties</TabsTrigger>
                     <TabsTrigger value="terms">Terms</TabsTrigger>
-                    <TabsTrigger value="branding">Branding</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="parties" className="space-y-4">
@@ -262,47 +245,6 @@ const MasterServicesAgreementTemplate = () => {
                         onChange={handleInputChange}
                         placeholder="American Arbitration Association"
                       />
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="branding" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="companyName">Company Name</Label>
-                      <Input 
-                        id="companyName"
-                        name="companyName" 
-                        value={formData.companyName} 
-                        onChange={handleInputChange}
-                        placeholder="Your Company"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="companyTagline">Company Tagline</Label>
-                      <Input 
-                        id="companyTagline"
-                        name="companyTagline" 
-                        value={formData.companyTagline} 
-                        onChange={handleInputChange}
-                        placeholder="Your business tagline"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="brandColor">Brand Color</Label>
-                      <div className="flex items-center gap-2">
-                        <Input 
-                          id="brandColor"
-                          name="brandColor" 
-                          value={formData.brandColor} 
-                          onChange={handleInputChange}
-                          placeholder="#0ea5e9"
-                        />
-                        <div 
-                          className="w-10 h-10 rounded border"
-                          style={{ backgroundColor: formData.brandColor }}
-                        ></div>
-                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>

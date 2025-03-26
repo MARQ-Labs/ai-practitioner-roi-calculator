@@ -10,10 +10,9 @@ import {
   DialogFooter
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Download, FileText, Loader2, Upload } from 'lucide-react';
+import { Download, FileText, Loader2 } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import MsaDocument from './MsaDocument';
-import { Label } from '@/components/ui/label';
 
 interface MsaFormData {
   serviceProviderName: string;
@@ -31,23 +30,16 @@ interface MsaFormData {
   governingLaw: string;
   arbitrationBody: string;
   survivingSections: string;
-  // Branding information
-  companyLogo?: string;
-  companyName?: string;
-  companyTagline?: string;
-  brandColor?: string;
 }
 
 interface MsaExportButtonProps {
   formData: MsaFormData;
-  onLogoChange: (logoUrl: string) => void;
 }
 
-const MsaExportButton: React.FC<MsaExportButtonProps> = ({ formData, onLogoChange }) => {
+const MsaExportButton: React.FC<MsaExportButtonProps> = ({ formData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleExport = async () => {
@@ -58,8 +50,8 @@ const MsaExportButton: React.FC<MsaExportButtonProps> = ({ formData, onLogoChang
         throw new Error("Content reference is not available");
       }
 
-      // Use company name for filename if available
-      const companyName = formData.companyName ? `-${formData.companyName.toLowerCase().replace(/\s+/g, '-')}` : '';
+      // Use service provider name for filename if available
+      const companyName = formData.serviceProviderName ? `-${formData.serviceProviderName.toLowerCase().replace(/\s+/g, '-')}` : '';
       const filename = `ai-master-services-agreement${companyName}.pdf`;
       
       const opt = {
@@ -91,24 +83,6 @@ const MsaExportButton: React.FC<MsaExportButtonProps> = ({ formData, onLogoChang
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        if (result) {
-          onLogoChange(result);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -126,31 +100,6 @@ const MsaExportButton: React.FC<MsaExportButtonProps> = ({ formData, onLogoChang
         <DialogHeader>
           <DialogTitle>Master Services Agreement Preview</DialogTitle>
         </DialogHeader>
-        
-        <div className="mb-4">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              onClick={triggerFileInput}
-              className="flex items-center gap-2"
-            >
-              <Upload size={16} />
-              Upload Logo
-            </Button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-            />
-            {formData.companyLogo && (
-              <Label className="text-sm text-gray-500">
-                Logo uploaded
-              </Label>
-            )}
-          </div>
-        </div>
         
         <div className="border rounded-lg p-1 bg-gray-50 overflow-hidden">
           <div ref={contentRef}>
