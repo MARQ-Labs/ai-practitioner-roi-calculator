@@ -282,7 +282,7 @@ const MsaDocument: React.FC<MsaDocumentProps> = ({ data }) => {
       </div>
 
       <div className="text-center text-xs text-gray-500 mt-8 pt-4 border-t">
-        <p>This Master Services Agreement template is designed for AI service providers | © {data.companyName || data.serviceProviderName || "Your Company"} {new Date().getFullYear()}</p>
+        <p>This Master Services Agreement template is designed for AI service providers | © {data.companyName || data.serviceProviderName || new Date().getFullYear()}</p>
       </div>
     </div>
   );

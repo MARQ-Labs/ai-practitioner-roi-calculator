@@ -35,9 +35,9 @@ const MasterServicesAgreementTemplate = () => {
     governingLaw: "",
     arbitrationBody: "",
     survivingSections: "5, 6, 7, 9, 10, and 11",
-    companyName: "Autosolutions.ai",
-    companyLogo: "/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png",
-    companyTagline: "Empowering businesses with AI-driven solutions",
+    companyName: "",
+    companyLogo: "",
+    companyTagline: "",
     brandColor: "#0ea5e9",
   });
 
@@ -67,11 +67,17 @@ const MasterServicesAgreementTemplate = () => {
         </div>
         
         <div className="flex flex-col items-center">
-          <img 
-            src={formData.companyLogo || "/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png"} 
-            alt="Autosolutions.ai Logo" 
-            className="w-32 mb-4"
-          />
+          {formData.companyLogo ? (
+            <img 
+              src={formData.companyLogo} 
+              alt="Company Logo" 
+              className="w-32 mb-4 object-contain"
+            />
+          ) : (
+            <div className="w-32 h-32 mb-4 flex items-center justify-center border border-dashed border-gray-300 rounded-md">
+              <FileText className="h-10 w-10 text-gray-400" />
+            </div>
+          )}
           <h1 className="text-3xl font-bold tracking-tight">Master Services Agreement Template</h1>
           <p className="text-gray-500 mt-2 max-w-2xl">
             Create a customized Master Services Agreement for your AI services business
