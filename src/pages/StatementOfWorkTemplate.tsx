@@ -1,8 +1,7 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Download } from "lucide-react";
+import { ArrowLeft, FileText, Download, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +18,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Table,
@@ -137,6 +137,44 @@ const StatementOfWorkTemplate = () => {
     // The data is passed to the SowExportButton component
   };
 
+  // Functions to add and remove items in lists
+  const addItemToList = (listName: 'deliverables' | 'milestones' | 'teamStructure' | 'risks') => {
+    const currentValues = form.getValues(listName);
+    
+    let newItem;
+    switch(listName) {
+      case 'deliverables':
+        newItem = { name: "", description: "", format: "", dueDate: "" };
+        break;
+      case 'milestones':
+        newItem = { name: "", description: "", date: "" };
+        break;
+      case 'teamStructure':
+        newItem = { role: "", responsibilities: "", personAssigned: "" };
+        break;
+      case 'risks':
+        newItem = { name: "", likelihood: "Medium", impact: "Medium", mitigation: "" };
+        break;
+    }
+    
+    form.setValue(listName, [...currentValues, newItem]);
+  };
+
+  const removeItemFromList = (listName: 'deliverables' | 'milestones' | 'teamStructure' | 'risks', index: number) => {
+    const currentValues = form.getValues(listName);
+    if (currentValues.length <= 1) {
+      toast({
+        title: "Cannot remove item",
+        description: "You must have at least one item in the list",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedValues = currentValues.filter((_, i) => i !== index);
+    form.setValue(listName, updatedValues);
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       <div className="mb-8 relative">
@@ -167,12 +205,14 @@ const StatementOfWorkTemplate = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          
           <Card>
             <CardHeader>
               <CardTitle>Project Information</CardTitle>
               <CardDescription>Basic information about the project and stakeholders</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -254,12 +294,14 @@ const StatementOfWorkTemplate = () => {
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>Project Scope</CardTitle>
               <CardDescription>Define the boundaries and details of the project</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="overview"
@@ -330,6 +372,7 @@ const StatementOfWorkTemplate = () => {
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>4. Deliverables</CardTitle>
@@ -343,6 +386,7 @@ const StatementOfWorkTemplate = () => {
                     <TableHead>Description</TableHead>
                     <TableHead>Format</TableHead>
                     <TableHead>Due Date</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -372,13 +416,37 @@ const StatementOfWorkTemplate = () => {
                           {...form.register(`deliverables.${index}.dueDate`)}
                         />
                       </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          type="button"
+                          onClick={() => removeItemFromList('deliverables', index)}
+                          className="h-8 w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addItemToList('deliverables')}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Deliverable
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>5. Timeline and Milestones</CardTitle>
@@ -391,6 +459,7 @@ const StatementOfWorkTemplate = () => {
                     <TableHead>Milestone</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Completion Date</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -414,13 +483,37 @@ const StatementOfWorkTemplate = () => {
                           {...form.register(`milestones.${index}.date`)}
                         />
                       </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          type="button"
+                          onClick={() => removeItemFromList('milestones', index)}
+                          className="h-8 w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addItemToList('milestones')}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Milestone
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>6. Team Structure and Responsibilities</CardTitle>
@@ -433,6 +526,7 @@ const StatementOfWorkTemplate = () => {
                     <TableHead>Role</TableHead>
                     <TableHead>Responsibilities</TableHead>
                     <TableHead>Person Assigned</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -456,19 +550,44 @@ const StatementOfWorkTemplate = () => {
                           {...form.register(`teamStructure.${index}.personAssigned`)}
                         />
                       </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          type="button"
+                          onClick={() => removeItemFromList('teamStructure', index)}
+                          className="h-8 w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addItemToList('teamStructure')}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Team Member
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>Project Requirements</CardTitle>
               <CardDescription>Technical specifications and resources needed</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="technicalRequirements"
@@ -539,12 +658,14 @@ const StatementOfWorkTemplate = () => {
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>Project Management</CardTitle>
               <CardDescription>How the project will be managed and controlled</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="budget"
@@ -581,6 +702,7 @@ const StatementOfWorkTemplate = () => {
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>12. Risk Management</CardTitle>
@@ -594,6 +716,7 @@ const StatementOfWorkTemplate = () => {
                     <TableHead>Likelihood</TableHead>
                     <TableHead>Impact</TableHead>
                     <TableHead>Mitigation Strategy</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -623,19 +746,44 @@ const StatementOfWorkTemplate = () => {
                           {...form.register(`risks.${index}.mitigation`)}
                         />
                       </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          type="button"
+                          onClick={() => removeItemFromList('risks', index)}
+                          className="h-8 w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addItemToList('risks')}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Risk
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
+          
           <Card>
             <CardHeader>
               <CardTitle>Final Details</CardTitle>
               <CardDescription>Additional information and closure details</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              
               <FormField
                 control={form.control}
                 name="communicationPlan"
