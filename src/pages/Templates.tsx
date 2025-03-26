@@ -1,0 +1,137 @@
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, ArrowRight, FileText, Download } from "lucide-react";
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import PageFooter from "@/components/calculator/PageFooter";
+
+const templateItems = [
+  {
+    title: "AI Project Charter Template",
+    description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
+    type: "PDF",
+    category: "Project Planning",
+    popularity: "Most Popular"
+  },
+  {
+    title: "Data Requirements Checklist",
+    description: "Standardized checklist for ensuring your organization has the necessary data for AI implementation",
+    type: "Excel",
+    category: "Data Preparation"
+  },
+  {
+    title: "AI Implementation Roadmap",
+    description: "Strategic timeline template for planning your AI adoption journey from pilot to full deployment",
+    type: "PowerPoint",
+    category: "Strategy"
+  },
+  {
+    title: "ROI Calculation Worksheet",
+    description: "Detailed spreadsheet for tracking and calculating expected and actual ROI from AI initiatives",
+    type: "Excel",
+    category: "Financial Planning"
+  },
+  {
+    title: "AI Governance Framework",
+    description: "Template for establishing ethical guidelines and governance procedures for AI applications",
+    type: "Word",
+    category: "Governance",
+    popularity: "New"
+  }
+];
+
+const Templates = () => {
+  return (
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <div className="text-center my-4 relative">
+        <div className="absolute left-0 top-0">
+          <Button variant="outline" size="sm" asChild className="flex items-center gap-1">
+            <Link to="/">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Dashboard</span>
+            </Link>
+          </Button>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <a href="https://autosolutions-ai.vercel.app/" target="_blank" rel="noopener noreferrer">
+            <img 
+              src="/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png" 
+              alt="Autosolutions.ai Logo" 
+              className="w-32 mb-4 hover:opacity-80 transition-opacity"
+            />
+          </a>
+          <h1 className="text-3xl font-bold tracking-tight">AI Implementation Templates</h1>
+          <p className="text-gray-500 mt-2 max-w-2xl">
+            Access standardized templates to streamline your AI implementation process. 
+            These templates cover various aspects of AI project planning, execution, and governance.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {templateItems.map((template, index) => (
+          <Card key={index} className="hover:shadow-md transition-all border flex flex-col">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div className="mb-2 text-primary">
+                  <FileText size={24} />
+                </div>
+                {template.popularity && (
+                  <Badge variant={template.popularity === "New" ? "secondary" : "default"} className="ml-2">
+                    {template.popularity}
+                  </Badge>
+                )}
+              </div>
+              <CardTitle>{template.title}</CardTitle>
+              <div className="flex gap-2 mt-1">
+                <Badge variant="outline">{template.type}</Badge>
+                <Badge variant="outline" className="bg-gray-50">{template.category}</Badge>
+              </div>
+              <CardDescription className="mt-2">
+                {template.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="mt-auto">
+              <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2">
+                <Download className="h-4 w-4" />
+                <span>Download Template</span>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="bg-gray-50 rounded-xl p-6 mb-12">
+        <h2 className="text-xl font-semibold mb-4">Need a Custom Template?</h2>
+        <p className="mb-4">
+          Don't see what you're looking for? Our AI experts can create custom templates 
+          tailored to your specific industry and use case requirements.
+        </p>
+        <Button asChild>
+          <a 
+            href="https://autosolutions-ai.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2"
+          >
+            <span>Request Custom Template</span>
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </Button>
+      </div>
+
+      <PageFooter />
+    </div>
+  );
+};
+
+export default Templates;
