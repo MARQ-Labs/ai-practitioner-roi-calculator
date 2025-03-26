@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import MsaDocument from '@/components/msa/MsaDocument';
+import MsaExportButton from '@/components/msa/MsaExportButton';
 import PageFooter from '@/components/calculator/PageFooter';
 
 const MasterServicesAgreementTemplate = () => {
@@ -55,6 +56,10 @@ const MasterServicesAgreementTemplate = () => {
               <span>Back to Templates</span>
             </Link>
           </Button>
+        </div>
+        
+        <div className="absolute right-0 top-0">
+          <MsaExportButton formData={formData} />
         </div>
         
         <div className="flex flex-col items-center">
