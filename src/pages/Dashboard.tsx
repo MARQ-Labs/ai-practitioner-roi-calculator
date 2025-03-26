@@ -91,7 +91,7 @@ const Dashboard = () => {
             <div className="mb-2 text-primary">
               <FileText size={28} />
             </div>
-            <CardTitle className="Change to Document Templates\n">Templates</CardTitle>
+            <CardTitle className="">Document Templates</CardTitle>
             <CardDescription>
               Access ready-to-use templates for AI implementation planning
             </CardDescription>
