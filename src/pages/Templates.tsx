@@ -45,37 +45,6 @@ const templateItems = [
     category: "Legal Documentation",
     popularity: "New",
     path: "/data-processing-agreement-template"
-  },
-  {
-    title: "AI Project Charter Template",
-    description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
-    type: "PDF",
-    category: "Project Planning",
-    popularity: "Most Popular"
-  },
-  {
-    title: "Data Requirements Checklist",
-    description: "Standardized checklist for ensuring your organization has the necessary data for AI implementation",
-    type: "Excel",
-    category: "Data Preparation"
-  },
-  {
-    title: "AI Implementation Roadmap",
-    description: "Strategic timeline template for planning your AI adoption journey from pilot to full deployment",
-    type: "PowerPoint",
-    category: "Strategy"
-  },
-  {
-    title: "ROI Calculation Worksheet",
-    description: "Detailed spreadsheet for tracking and calculating expected and actual ROI from AI initiatives",
-    type: "Excel",
-    category: "Financial Planning"
-  },
-  {
-    title: "AI Governance Framework",
-    description: "Template for establishing ethical guidelines and governance procedures for AI applications",
-    type: "Word",
-    category: "Governance"
   }
 ];
 
