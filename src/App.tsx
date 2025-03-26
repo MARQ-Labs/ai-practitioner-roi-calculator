@@ -11,6 +11,7 @@ import CaseStudyLibrary from "./pages/CaseStudyLibrary";
 import AIMaturityAssessment from "./pages/AIMaturityAssessment";
 import Dashboard from "./pages/Dashboard";
 import Templates from "./pages/Templates";
+import StatementOfWorkTemplate from "./pages/StatementOfWorkTemplate";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/case-studies" element={<CaseStudyLibrary />} />
           <Route path="/maturity-assessment" element={<AIMaturityAssessment />} />
           <Route path="/templates" element={<Templates />} />
+          <Route path="/statement-of-work-template" element={<StatementOfWorkTemplate />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

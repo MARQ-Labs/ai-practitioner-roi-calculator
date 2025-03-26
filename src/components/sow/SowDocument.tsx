@@ -1,0 +1,274 @@
+
+import React from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+interface SowFormData {
+  projectTitle: string;
+  clientName: string;
+  preparedBy: string;
+  date: string;
+  version: string;
+  projectId: string;
+  overview: string;
+  inScope: string;
+  outOfScope: string;
+  methodology: string;
+  deliverables: {
+    name: string;
+    description: string;
+    format: string;
+    dueDate: string;
+  }[];
+  milestones: {
+    name: string;
+    description: string;
+    date: string;
+  }[];
+  teamStructure: {
+    role: string;
+    responsibilities: string;
+    personAssigned: string;
+  }[];
+  technicalRequirements: string;
+  dataRequirements: string;
+  performanceCriteria: string;
+  testingAcceptance: string;
+  budget: string;
+  changeManagement: string;
+  risks: {
+    name: string;
+    likelihood: string;
+    impact: string;
+    mitigation: string;
+  }[];
+  communicationPlan: string;
+  assumptions: string;
+}
+
+interface SowDocumentProps {
+  data: SowFormData;
+}
+
+const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
+  return (
+    <div className="bg-white p-8 font-sans" style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold mb-2">AI Project Statement of Work</h1>
+        <p className="text-gray-600 mb-4">
+          A comprehensive agreement defining the scope, deliverables, and terms for an artificial intelligence project
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <div>
+          <p className="font-semibold">Project Title:</p>
+          <p>{data.projectTitle || "[Project Name]"}</p>
+        </div>
+        <div>
+          <p className="font-semibold">Client:</p>
+          <p>{data.clientName || "[Client Name]"}</p>
+        </div>
+        <div>
+          <p className="font-semibold">Prepared By:</p>
+          <p>{data.preparedBy || "[Your Name/Company]"}</p>
+        </div>
+        <div>
+          <p className="font-semibold">Date:</p>
+          <p>{data.date || "[Preparation Date]"}</p>
+        </div>
+        <div>
+          <p className="font-semibold">Version:</p>
+          <p>{data.version || "[Document Version]"}</p>
+        </div>
+        <div>
+          <p className="font-semibold">Project ID:</p>
+          <p>{data.projectId || "[Internal Reference Number]"}</p>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">1. Project Overview</h2>
+        <p className="whitespace-pre-line">{data.overview || "[Provide a concise description of the project, its business context, and the main objectives. Clearly articulate the problem being solved and how AI will address it.]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">2. Scope of Work</h2>
+        
+        <h3 className="text-lg font-semibold mb-2">2.1 In-Scope</h3>
+        <p className="whitespace-pre-line">{data.inScope || "[List specific deliverables, components, and services that will be provided]"}</p>
+        
+        <h3 className="text-lg font-semibold mt-4 mb-2">2.2 Out-of-Scope</h3>
+        <p className="whitespace-pre-line">{data.outOfScope || "[Clearly define what is NOT included in this project]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">3. Approach and Methodology</h2>
+        <p className="whitespace-pre-line">{data.methodology || "[Describe the AI development methodology (e.g., agile, waterfall)]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">4. Deliverables</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Deliverable</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Format</TableHead>
+              <TableHead>Due Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.deliverables.map((deliverable, index) => (
+              <TableRow key={index}>
+                <TableCell>{deliverable.name || "[Deliverable]"}</TableCell>
+                <TableCell>{deliverable.description || "[Description]"}</TableCell>
+                <TableCell>{deliverable.format || "[Format]"}</TableCell>
+                <TableCell>{deliverable.dueDate || "[Date]"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">5. Timeline and Milestones</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Milestone</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Completion Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.milestones.map((milestone, index) => (
+              <TableRow key={index}>
+                <TableCell>{milestone.name || "[Milestone]"}</TableCell>
+                <TableCell>{milestone.description || "[Description]"}</TableCell>
+                <TableCell>{milestone.date || "[Date]"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">6. Team Structure and Responsibilities</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Role</TableHead>
+              <TableHead>Responsibilities</TableHead>
+              <TableHead>Person Assigned</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.teamStructure.map((team, index) => (
+              <TableRow key={index}>
+                <TableCell>{team.role || "[Role]"}</TableCell>
+                <TableCell>{team.responsibilities || "[Responsibilities]"}</TableCell>
+                <TableCell>{team.personAssigned || "[Name]"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">7. Requirements</h2>
+        <h3 className="text-lg font-semibold mb-2">7.1 Technical Requirements</h3>
+        <p className="whitespace-pre-line">{data.technicalRequirements || "[List hardware, software, infrastructure needs]"}</p>
+        
+        <h3 className="text-lg font-semibold mt-4 mb-2">7.2 Data Requirements</h3>
+        <p className="whitespace-pre-line">{data.dataRequirements || "[Specify data sources, formats, and volumes]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">8. Performance Criteria</h2>
+        <p className="whitespace-pre-line">{data.performanceCriteria || "[Define specific metrics for evaluating model performance]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">9. Testing and Acceptance</h2>
+        <p className="whitespace-pre-line">{data.testingAcceptance || "[Outline the testing methodology]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">10. Budget and Payment Terms</h2>
+        <p className="whitespace-pre-line">{data.budget || "[Provide detailed cost breakdown]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">11. Change Management Process</h2>
+        <p className="whitespace-pre-line">{data.changeManagement || "[Define the process for requesting changes]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">12. Risk Management</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Risk</TableHead>
+              <TableHead>Likelihood</TableHead>
+              <TableHead>Impact</TableHead>
+              <TableHead>Mitigation Strategy</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.risks.map((risk, index) => (
+              <TableRow key={index}>
+                <TableCell>{risk.name || "[Risk]"}</TableCell>
+                <TableCell>{risk.likelihood || "[High/Medium/Low]"}</TableCell>
+                <TableCell>{risk.impact || "[High/Medium/Low]"}</TableCell>
+                <TableCell>{risk.mitigation || "[Strategy]"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">13. Communication Plan</h2>
+        <p className="whitespace-pre-line">{data.communicationPlan || "[Specify regular meeting cadence]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">14. Assumptions and Dependencies</h2>
+        <p className="whitespace-pre-line">{data.assumptions || "[List all assumptions made in preparing this SOW]"}</p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-2">15. Signatures</h2>
+        <div className="grid grid-cols-2 gap-8 mt-4">
+          <div>
+            <p className="font-semibold mb-4">For {data.preparedBy || "[Service Provider]"}:</p>
+            <p className="mb-2">Name: _____________________</p>
+            <p className="mb-2">Title: _____________________</p>
+            <p className="mb-2">Signature: _________________</p>
+            <p className="mb-2">Date: _____________________</p>
+          </div>
+          <div>
+            <p className="font-semibold mb-4">For {data.clientName || "[Client]"}:</p>
+            <p className="mb-2">Name: _____________________</p>
+            <p className="mb-2">Title: _____________________</p>
+            <p className="mb-2">Signature: _________________</p>
+            <p className="mb-2">Date: _____________________</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="text-center text-xs text-gray-500 mt-8 pt-4 border-t">
+        <p>This Statement of Work template is designed for AI project management | © {data.preparedBy || "Your Company"} {new Date().getFullYear()}</p>
+      </div>
+    </div>
+  );
+};
+
+export default SowDocument;

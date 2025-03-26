@@ -19,7 +19,8 @@ const templateItems = [
     description: "A comprehensive template for AI implementations defining project scope, deliverables, and timelines",
     type: "Word",
     category: "Project Documentation",
-    popularity: "New"
+    popularity: "New",
+    path: "/statement-of-work-template"
   },
   {
     title: "AI Project Charter Template",
@@ -107,10 +108,19 @@ const Templates = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
-              <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2">
-                <Download className="h-4 w-4" />
-                <span>Download Template</span>
-              </Button>
+              {template.path ? (
+                <Button variant="outline" size="sm" asChild className="w-full flex items-center justify-center gap-2">
+                  <Link to={template.path}>
+                    <FileText className="h-4 w-4" />
+                    <span>Use Template</span>
+                  </Link>
+                </Button>
+              ) : (
+                <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2">
+                  <Download className="h-4 w-4" />
+                  <span>Download Template</span>
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}
