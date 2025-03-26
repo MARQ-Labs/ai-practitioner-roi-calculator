@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Table,
@@ -16,10 +15,12 @@ interface SowFormData {
   date: string;
   version: string;
   projectId: string;
-  overview: string;
-  inScope: string;
-  outOfScope: string;
-  methodology: string;
+  // Branding information
+  companyLogo?: string;
+  companyName?: string;
+  companyTagline?: string;
+  brandColor?: string;
+  // Other fields
   deliverables: {
     name: string;
     description: string;
@@ -57,10 +58,37 @@ interface SowDocumentProps {
 }
 
 const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
+  // Define a default or brand color based on the data
+  const brandColor = data.brandColor || "#0ea5e9"; // Default to a blue color if not provided
+  
   return (
     <div className="bg-white p-8 font-sans" style={{ maxWidth: "800px", margin: "0 auto" }}>
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold mb-2">AI Project Statement of Work</h1>
+        {data.companyLogo && (
+          <div className="flex justify-center mb-4">
+            <img 
+              src={data.companyLogo} 
+              alt={`${data.companyName || 'Company'} Logo`} 
+              className="max-h-20 max-w-[200px] object-contain"
+            />
+          </div>
+        )}
+        
+        {data.companyName && (
+          <p className="text-lg font-semibold mb-1" style={{ color: brandColor }}>
+            {data.companyName}
+          </p>
+        )}
+        
+        {data.companyTagline && (
+          <p className="text-sm text-gray-600 mb-4 italic">
+            {data.companyTagline}
+          </p>
+        )}
+        
+        <h1 className="text-2xl font-bold mb-2" style={{ color: brandColor }}>
+          AI Project Statement of Work
+        </h1>
         <p className="text-gray-600 mb-4">
           A comprehensive agreement defining the scope, deliverables, and terms for an artificial intelligence project
         </p>
@@ -265,7 +293,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
       </div>
 
       <div className="text-center text-xs text-gray-500 mt-8 pt-4 border-t">
-        <p>This Statement of Work template is designed for AI project management | © {data.preparedBy || "Your Company"} {new Date().getFullYear()}</p>
+        <p>This Statement of Work template is designed for AI project management | © {data.companyName || data.preparedBy || "Your Company"} {new Date().getFullYear()}</p>
       </div>
     </div>
   );

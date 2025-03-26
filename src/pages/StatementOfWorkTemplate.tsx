@@ -1,8 +1,7 @@
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { ArrowLeft, FileText, Download, Plus, Minus } from "lucide-react";
+import { ArrowLeft, FileText, Download, Plus, Minus, Upload, Image, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +11,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Card,
@@ -29,6 +29,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { formatReportData } from "@/utils/pdfExport";
 import PageFooter from "@/components/calculator/PageFooter";
@@ -41,6 +47,12 @@ type SowFormData = {
   date: string;
   version: string;
   projectId: string;
+  // Branding information
+  companyLogo?: string;
+  companyName?: string;
+  companyTagline?: string;
+  brandColor?: string;
+  // Content fields
   overview: string;
   inScope: string;
   outOfScope: string;
@@ -103,6 +115,9 @@ const defaultRisks = [
 
 const StatementOfWorkTemplate = () => {
   const { toast } = useToast();
+  const [uploadedLogo, setUploadedLogo] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const form = useForm<SowFormData>({
     defaultValues: {
       projectTitle: "",
@@ -111,6 +126,11 @@ const StatementOfWorkTemplate = () => {
       date: new Date().toLocaleDateString(),
       version: "1.0",
       projectId: "",
+      // Branding defaults
+      companyName: "",
+      companyTagline: "",
+      brandColor: "#0ea5e9", // Default teal color
+      // Content fields
       overview: "",
       inScope: "",
       outOfScope: "",
@@ -131,11 +151,51 @@ const StatementOfWorkTemplate = () => {
   });
 
   const onSubmit = (data: SowFormData) => {
+    // If a logo was uploaded, add it to the form data
+    if (uploadedLogo) {
+      data.companyLogo = uploadedLogo;
+    }
+    
     toast({
       title: "Form submitted",
       description: "Your Statement of Work is ready to export",
     });
     // The data is passed to the SowExportButton component
+  };
+
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (limit to 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Logo file should be less than 2MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const logoDataUrl = e.target?.result as string;
+      setUploadedLogo(logoDataUrl);
+      form.setValue("companyLogo", logoDataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const removeLogo = () => {
+    setUploadedLogo(null);
+    form.setValue("companyLogo", undefined);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   // Type-safe functions to add items to specific lists
@@ -254,6 +314,115 @@ const StatementOfWorkTemplate = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          
+          {/* New Card for Branding */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Document Branding</CardTitle>
+              <CardDescription>Customize the document with your branding elements</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Logo Upload */}
+              <div className="mb-4">
+                <FormLabel>Company Logo</FormLabel>
+                <div className="mt-2 flex items-center gap-4">
+                  <div 
+                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center w-40 h-24 cursor-pointer hover:bg-gray-50 transition-colors ${uploadedLogo ? 'border-teal-300' : 'border-gray-300'}`}
+                    onClick={triggerFileInput}
+                  >
+                    {uploadedLogo ? (
+                      <img 
+                        src={uploadedLogo} 
+                        alt="Uploaded logo" 
+                        className="max-h-16 max-w-32 object-contain"
+                      />
+                    ) : (
+                      <>
+                        <Upload className="h-8 w-8 text-gray-400 mb-1" />
+                        <span className="text-xs text-gray-500">Upload logo</span>
+                      </>
+                    )}
+                    <input 
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                    />
+                  </div>
+                  
+                  {uploadedLogo && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={removeLogo}
+                      className="h-8 flex items-center gap-1 text-red-500"
+                    >
+                      <X className="h-4 w-4" />
+                      Remove
+                    </Button>
+                  )}
+                  
+                  <FormDescription className="text-xs text-gray-500">
+                    Upload a logo (max 2MB). This will appear at the top of your Statement of Work.
+                  </FormDescription>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your company name" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyTagline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Tagline</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your company slogan or tagline" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={form.control}
+                name="brandColor"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Brand Color</FormLabel>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        {...field}
+                        className="w-10 h-10 rounded border overflow-hidden cursor-pointer"
+                      />
+                      <Input
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="font-mono"
+                      />
+                    </div>
+                    <FormDescription>
+                      Select a brand color to be used for headings in the document
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
           
           <Card>
             <CardHeader>

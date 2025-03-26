@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -25,6 +24,12 @@ interface SowFormData {
   inScope: string;
   outOfScope: string;
   methodology: string;
+  // Branding information
+  companyLogo?: string;
+  companyName?: string;
+  companyTagline?: string;
+  brandColor?: string;
+  // Other fields
   deliverables: {
     name: string;
     description: string;
@@ -75,7 +80,9 @@ const SowExportButton: React.FC<SowExportButtonProps> = ({ formData }) => {
         throw new Error("Content reference is not available");
       }
 
-      const filename = `ai-statement-of-work-${formData.projectTitle.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+      // Use company name for filename if available
+      const companyName = formData.companyName ? `-${formData.companyName.toLowerCase().replace(/\s+/g, '-')}` : '';
+      const filename = `ai-statement-of-work${companyName}-${formData.projectTitle.toLowerCase().replace(/\s+/g, '-')}.pdf`;
       
       const opt = {
         margin: [15, 15, 15, 15],
