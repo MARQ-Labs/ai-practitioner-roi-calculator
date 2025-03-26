@@ -46,7 +46,7 @@ const CaseStudyLibrary: React.FC = () => {
         <Button variant="ghost" size="sm" asChild className="flex items-center gap-2">
           <Link to="/">
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Calculator</span>
+            <span>Back to Dashboard</span>
           </Link>
         </Button>
       </div>
