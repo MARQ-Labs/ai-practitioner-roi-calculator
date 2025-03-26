@@ -60,10 +60,11 @@ const Dashboard = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Assess your current capabilities across key dimensions and receive tailored recommendations for improvement.
             </p>
-            <Link to="/maturity-assessment" className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              Take Assessment
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+            <Button asChild className="w-full rounded-md">
+              <Link to="/maturity-assessment">
+                Access
+              </Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -82,10 +83,11 @@ const Dashboard = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Explore 40+ detailed case studies across industries to inform your AI strategy and implementation.
             </p>
-            <Link to="/case-studies" className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              Browse Studies
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+            <Button asChild className="w-full rounded-md">
+              <Link to="/case-studies">
+                Access
+              </Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -104,10 +106,11 @@ const Dashboard = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Download standardized templates for AI project charters, data requirements, and implementation roadmaps.
             </p>
-            <Link to="/templates" className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              View Templates
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+            <Button asChild className="w-full rounded-md">
+              <Link to="/templates">
+                Access
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
