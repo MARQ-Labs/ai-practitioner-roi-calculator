@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -137,42 +138,90 @@ const StatementOfWorkTemplate = () => {
     // The data is passed to the SowExportButton component
   };
 
-  // Functions to add and remove items in lists
-  const addItemToList = (listName: 'deliverables' | 'milestones' | 'teamStructure' | 'risks') => {
-    const currentValues = form.getValues(listName);
-    
-    let newItem;
-    switch(listName) {
-      case 'deliverables':
-        newItem = { name: "", description: "", format: "", dueDate: "" };
-        break;
-      case 'milestones':
-        newItem = { name: "", description: "", date: "" };
-        break;
-      case 'teamStructure':
-        newItem = { role: "", responsibilities: "", personAssigned: "" };
-        break;
-      case 'risks':
-        newItem = { name: "", likelihood: "Medium", impact: "Medium", mitigation: "" };
-        break;
-    }
-    
-    form.setValue(listName, [...currentValues, newItem]);
+  // Type-safe functions to add items to specific lists
+  const addDeliverable = () => {
+    const currentValues = form.getValues("deliverables");
+    const newItem = { name: "", description: "", format: "", dueDate: "" };
+    form.setValue("deliverables", [...currentValues, newItem]);
   };
 
-  const removeItemFromList = (listName: 'deliverables' | 'milestones' | 'teamStructure' | 'risks', index: number) => {
-    const currentValues = form.getValues(listName);
+  const addMilestone = () => {
+    const currentValues = form.getValues("milestones");
+    const newItem = { name: "", description: "", date: "" };
+    form.setValue("milestones", [...currentValues, newItem]);
+  };
+
+  const addTeamMember = () => {
+    const currentValues = form.getValues("teamStructure");
+    const newItem = { role: "", responsibilities: "", personAssigned: "" };
+    form.setValue("teamStructure", [...currentValues, newItem]);
+  };
+
+  const addRisk = () => {
+    const currentValues = form.getValues("risks");
+    const newItem = { name: "", likelihood: "Medium", impact: "Medium", mitigation: "" };
+    form.setValue("risks", [...currentValues, newItem]);
+  };
+
+  // Type-safe functions to remove items from specific lists
+  const removeDeliverable = (index: number) => {
+    const currentValues = form.getValues("deliverables");
     if (currentValues.length <= 1) {
       toast({
         title: "Cannot remove item",
-        description: "You must have at least one item in the list",
+        description: "You must have at least one deliverable in the list",
         variant: "destructive",
       });
       return;
     }
     
     const updatedValues = currentValues.filter((_, i) => i !== index);
-    form.setValue(listName, updatedValues);
+    form.setValue("deliverables", updatedValues);
+  };
+
+  const removeMilestone = (index: number) => {
+    const currentValues = form.getValues("milestones");
+    if (currentValues.length <= 1) {
+      toast({
+        title: "Cannot remove item",
+        description: "You must have at least one milestone in the list",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedValues = currentValues.filter((_, i) => i !== index);
+    form.setValue("milestones", updatedValues);
+  };
+
+  const removeTeamMember = (index: number) => {
+    const currentValues = form.getValues("teamStructure");
+    if (currentValues.length <= 1) {
+      toast({
+        title: "Cannot remove item",
+        description: "You must have at least one team member in the list",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedValues = currentValues.filter((_, i) => i !== index);
+    form.setValue("teamStructure", updatedValues);
+  };
+
+  const removeRisk = (index: number) => {
+    const currentValues = form.getValues("risks");
+    if (currentValues.length <= 1) {
+      toast({
+        title: "Cannot remove item",
+        description: "You must have at least one risk in the list",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedValues = currentValues.filter((_, i) => i !== index);
+    form.setValue("risks", updatedValues);
   };
 
   return (
@@ -421,7 +470,7 @@ const StatementOfWorkTemplate = () => {
                           variant="ghost" 
                           size="icon"
                           type="button"
-                          onClick={() => removeItemFromList('deliverables', index)}
+                          onClick={() => removeDeliverable(index)}
                           className="h-8 w-8"
                         >
                           <Minus className="h-4 w-4" />
@@ -436,7 +485,7 @@ const StatementOfWorkTemplate = () => {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => addItemToList('deliverables')}
+                  onClick={addDeliverable}
                   className="flex items-center gap-1"
                 >
                   <Plus className="h-4 w-4" />
@@ -488,7 +537,7 @@ const StatementOfWorkTemplate = () => {
                           variant="ghost" 
                           size="icon"
                           type="button"
-                          onClick={() => removeItemFromList('milestones', index)}
+                          onClick={() => removeMilestone(index)}
                           className="h-8 w-8"
                         >
                           <Minus className="h-4 w-4" />
@@ -503,7 +552,7 @@ const StatementOfWorkTemplate = () => {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => addItemToList('milestones')}
+                  onClick={addMilestone}
                   className="flex items-center gap-1"
                 >
                   <Plus className="h-4 w-4" />
@@ -555,7 +604,7 @@ const StatementOfWorkTemplate = () => {
                           variant="ghost" 
                           size="icon"
                           type="button"
-                          onClick={() => removeItemFromList('teamStructure', index)}
+                          onClick={() => removeTeamMember(index)}
                           className="h-8 w-8"
                         >
                           <Minus className="h-4 w-4" />
@@ -570,7 +619,7 @@ const StatementOfWorkTemplate = () => {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => addItemToList('teamStructure')}
+                  onClick={addTeamMember}
                   className="flex items-center gap-1"
                 >
                   <Plus className="h-4 w-4" />
@@ -751,7 +800,7 @@ const StatementOfWorkTemplate = () => {
                           variant="ghost" 
                           size="icon"
                           type="button"
-                          onClick={() => removeItemFromList('risks', index)}
+                          onClick={() => removeRisk(index)}
                           className="h-8 w-8"
                         >
                           <Minus className="h-4 w-4" />
@@ -766,7 +815,7 @@ const StatementOfWorkTemplate = () => {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => addItemToList('risks')}
+                  onClick={addRisk}
                   className="flex items-center gap-1"
                 >
                   <Plus className="h-4 w-4" />
