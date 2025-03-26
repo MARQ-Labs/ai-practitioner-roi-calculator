@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calculator, LineChart, BookOpen, BarChart4 } from "lucide-react";
+import { ArrowRight, Calculator, LineChart, BookOpen, BarChart4, FileText } from "lucide-react";
 import { 
   Card, 
   CardHeader, 
@@ -127,6 +127,31 @@ const Dashboard = () => {
               className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
               Compare Metrics
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* NEW: Templates Card */}
+        <Card className="hover:shadow-md transition-all border">
+          <CardHeader>
+            <div className="mb-2 text-primary">
+              <FileText size={28} />
+            </div>
+            <CardTitle>Templates</CardTitle>
+            <CardDescription>
+              Access ready-to-use templates for AI implementation planning
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Download standardized templates for AI project charters, data requirements, and implementation roadmaps.
+            </p>
+            <Link 
+              to="/templates" 
+              className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              View Templates
               <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </CardContent>
