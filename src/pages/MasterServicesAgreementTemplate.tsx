@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import MsaDocument from '@/components/msa/MsaDocument';
 import MsaExportButton from '@/components/msa/MsaExportButton';
 import PageFooter from '@/components/calculator/PageFooter';
@@ -59,9 +58,13 @@ const MasterServicesAgreementTemplate = () => {
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="w-32 h-32 mb-4 flex items-center justify-center">
-            <FileText className="h-16 w-16 text-primary" />
-          </div>
+          <a href="https://autosolutions-ai.vercel.app/" target="_blank" rel="noopener noreferrer">
+            <img 
+              src="/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png" 
+              alt="Autosolutions.ai Logo" 
+              className="w-32 mb-4 hover:opacity-80 transition-opacity"
+            />
+          </a>
           <h1 className="text-3xl font-bold tracking-tight">Master Services Agreement Template</h1>
           <p className="text-gray-500 mt-2 max-w-2xl">
             Create a customized Master Services Agreement for your AI services business
