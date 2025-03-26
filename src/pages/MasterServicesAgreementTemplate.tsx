@@ -46,6 +46,10 @@ const MasterServicesAgreementTemplate = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLogoChange = (logoUrl: string) => {
+    setFormData((prev) => ({ ...prev, companyLogo: logoUrl }));
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       <div className="text-center my-4 relative">
@@ -59,12 +63,12 @@ const MasterServicesAgreementTemplate = () => {
         </div>
         
         <div className="absolute right-0 top-0">
-          <MsaExportButton formData={formData} />
+          <MsaExportButton formData={formData} onLogoChange={handleLogoChange} />
         </div>
         
         <div className="flex flex-col items-center">
           <img 
-            src="/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png" 
+            src={formData.companyLogo || "/lovable-uploads/5a85bb3c-33d0-4ee5-9030-1eea5c4027b7.png"} 
             alt="Autosolutions.ai Logo" 
             className="w-32 mb-4"
           />
