@@ -91,7 +91,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
           </p>
         )}
         
-        <h1 className="text-2xl font-bold mb-2" style={{ color: brandColor }}>
+        <h1 className="text-2xl font-bold mb-2">
           AI Project Statement of Work
         </h1>
         <p className="text-gray-600 mb-4">
