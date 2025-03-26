@@ -15,6 +15,7 @@ import StatementOfWorkTemplate from "./pages/StatementOfWorkTemplate";
 import MasterServicesAgreementTemplate from "./pages/MasterServicesAgreementTemplate";
 import NonDisclosureAgreementTemplate from "./pages/NonDisclosureAgreementTemplate";
 import DataProcessingAgreementTemplate from "./pages/DataProcessingAgreementTemplate";
+import ServiceLevelAgreementTemplate from "./pages/ServiceLevelAgreementTemplate";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/master-services-agreement-template" element={<MasterServicesAgreementTemplate />} />
           <Route path="/non-disclosure-agreement-template" element={<NonDisclosureAgreementTemplate />} />
           <Route path="/data-processing-agreement-template" element={<DataProcessingAgreementTemplate />} />
+          <Route path="/service-level-agreement-template" element={<ServiceLevelAgreementTemplate />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

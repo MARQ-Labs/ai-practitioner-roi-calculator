@@ -45,6 +45,14 @@ const templateItems = [
     category: "Legal Documentation",
     popularity: "New",
     path: "/data-processing-agreement-template"
+  },
+  {
+    title: "Service Level Agreement (SLA)",
+    description: "A detailed agreement template establishing performance standards, support expectations, and quality metrics for AI systems",
+    type: "Word",
+    category: "Legal Documentation",
+    popularity: "New",
+    path: "/service-level-agreement-template"
   }
 ];
 
