@@ -74,7 +74,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
             <img 
               src={data.companyLogo} 
               alt={`${data.companyName || 'Company'} Logo`} 
-              className="max-h-20 max-w-[200px] object-contain"
+              className="max-h-28 max-w-[240px] object-contain"
             />
           </div>
         )}
