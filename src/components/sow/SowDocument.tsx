@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Table,
@@ -15,6 +16,10 @@ interface SowFormData {
   date: string;
   version: string;
   projectId: string;
+  overview: string;
+  inScope: string;
+  outOfScope: string;
+  methodology: string;
   // Branding information
   companyLogo?: string;
   companyName?: string;
@@ -65,7 +70,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
     <div className="bg-white p-8 font-sans" style={{ maxWidth: "800px", margin: "0 auto" }}>
       <div className="text-center mb-8">
         {data.companyLogo && (
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-2">
             <img 
               src={data.companyLogo} 
               alt={`${data.companyName || 'Company'} Logo`} 
