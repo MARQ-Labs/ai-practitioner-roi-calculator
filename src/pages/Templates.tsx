@@ -23,6 +23,14 @@ const templateItems = [
     path: "/statement-of-work-template"
   },
   {
+    title: "Master Services Agreement (MSA)",
+    description: "A detailed legal contract template for AI services defining terms of engagement between service provider and client",
+    type: "Word",
+    category: "Legal Documentation",
+    popularity: "New",
+    path: "/master-services-agreement-template"
+  },
+  {
     title: "AI Project Charter Template",
     description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
     type: "PDF",
