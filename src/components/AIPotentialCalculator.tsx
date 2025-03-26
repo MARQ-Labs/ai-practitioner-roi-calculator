@@ -7,6 +7,8 @@ import { calculateTotalImpact } from "@/services/calculatorService";
 import { Department, CostItem } from "@/models/calculator";
 import { formatReportData } from "@/utils/pdfExport";
 import { Button } from "@/components/ui/button";
+import { ArrowRight, BarChart4 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 // Import refactored components
 import Header from "./calculator/Header";
@@ -138,6 +140,33 @@ const AIPotentialCalculator: React.FC<AIPotentialCalculatorProps> = ({ onReportD
         leaderROI={roiData.leadersROI}
         customCost={customCost}
       />
+      
+      {/* Benchmark Comparison Card */}
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart4 size={20} className="text-primary" />
+              <span>ROI Benchmark Comparison</span>
+            </CardTitle>
+            <CardDescription>
+              Compare your calculated ROI with industry benchmarks and see how your organization stacks up
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Our benchmark tool provides detailed comparisons of your ROI metrics against industry averages and top performers.
+              It also offers insights on implementation timelines and success rates.
+            </p>
+            <Button variant="outline" asChild>
+              <Link to="/benchmark" className="flex items-center gap-1">
+                <span>View Detailed Benchmarks</span>
+                <ArrowRight size={16} />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
       
       {/* Tab Navigation */}
       <TabNavigation

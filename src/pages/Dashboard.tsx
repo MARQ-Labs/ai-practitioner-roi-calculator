@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calculator, LineChart, BookOpen, BarChart4, FileText } from "lucide-react";
+import { ArrowRight, Calculator, LineChart, BookOpen, FileText } from "lucide-react";
 import { 
   Card, 
   CardHeader, 
@@ -107,32 +107,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Benchmark Comparison Card */}
-        <Card className="hover:shadow-md transition-all border">
-          <CardHeader>
-            <div className="mb-2 text-primary">
-              <BarChart4 size={28} />
-            </div>
-            <CardTitle>Benchmark Comparison</CardTitle>
-            <CardDescription>
-              Compare your AI metrics against industry benchmarks
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              See how your organization's AI initiatives stack up against industry leaders and peers.
-            </p>
-            <Link 
-              to="/benchmark" 
-              className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-            >
-              Compare Metrics
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* NEW: Templates Card */}
+        {/* Templates Card */}
         <Card className="hover:shadow-md transition-all border">
           <CardHeader>
             <div className="mb-2 text-primary">
