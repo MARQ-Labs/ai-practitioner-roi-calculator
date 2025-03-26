@@ -1,8 +1,11 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Calculator, LineChart, BookOpen, FileText } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import PageFooter from "@/components/calculator/PageFooter";
+
 const Dashboard = () => {
   return <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center my-8 relative">
@@ -34,10 +37,11 @@ const Dashboard = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Generate detailed forecasts of financial impact, time savings, and increased team capacity for your AI initiatives.
             </p>
-            <Link to="/calculator" className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              Open Calculator
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+            <Button asChild className="w-full rounded-md">
+              <Link to="/calculator">
+                Access
+              </Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -111,4 +115,5 @@ const Dashboard = () => {
       <PageFooter />
     </div>;
 };
+
 export default Dashboard;
