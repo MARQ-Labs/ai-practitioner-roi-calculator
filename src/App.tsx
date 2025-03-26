@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Templates from "./pages/Templates";
 import StatementOfWorkTemplate from "./pages/StatementOfWorkTemplate";
 import MasterServicesAgreementTemplate from "./pages/MasterServicesAgreementTemplate";
+import NonDisclosureAgreementTemplate from "./pages/NonDisclosureAgreementTemplate";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/templates" element={<Templates />} />
           <Route path="/statement-of-work-template" element={<StatementOfWorkTemplate />} />
           <Route path="/master-services-agreement-template" element={<MasterServicesAgreementTemplate />} />
+          <Route path="/non-disclosure-agreement-template" element={<NonDisclosureAgreementTemplate />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

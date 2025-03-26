@@ -31,6 +31,14 @@ const templateItems = [
     path: "/master-services-agreement-template"
   },
   {
+    title: "Non-Disclosure Agreement (NDA)",
+    description: "A customizable NDA template specifically designed for protecting AI-related intellectual property and confidential information",
+    type: "Word",
+    category: "Legal Documentation",
+    popularity: "New",
+    path: "/non-disclosure-agreement-template"
+  },
+  {
     title: "AI Project Charter Template",
     description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
     type: "PDF",
