@@ -15,6 +15,13 @@ import PageFooter from "@/components/calculator/PageFooter";
 
 const templateItems = [
   {
+    title: "Statement of Work (SoW) Template",
+    description: "A comprehensive template for AI implementations defining project scope, deliverables, and timelines",
+    type: "Word",
+    category: "Project Documentation",
+    popularity: "New"
+  },
+  {
     title: "AI Project Charter Template",
     description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
     type: "PDF",
@@ -43,8 +50,7 @@ const templateItems = [
     title: "AI Governance Framework",
     description: "Template for establishing ethical guidelines and governance procedures for AI applications",
     type: "Word",
-    category: "Governance",
-    popularity: "New"
+    category: "Governance"
   }
 ];
 
