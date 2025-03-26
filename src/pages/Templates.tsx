@@ -39,6 +39,14 @@ const templateItems = [
     path: "/non-disclosure-agreement-template"
   },
   {
+    title: "Data Processing Agreement (DPA)",
+    description: "A comprehensive data processing agreement template for companies working with AI vendors handling personal data",
+    type: "Word",
+    category: "Legal Documentation",
+    popularity: "New",
+    path: "/data-processing-agreement-template"
+  },
+  {
     title: "AI Project Charter Template",
     description: "A comprehensive template for defining AI project scope, objectives, and success metrics",
     type: "PDF",
