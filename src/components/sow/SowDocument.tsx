@@ -7,6 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableFooter,
 } from "@/components/ui/table";
 
 interface SowFormData {
@@ -48,6 +49,11 @@ interface SowFormData {
   testingAcceptance: string;
   budget: string;
   changeManagement: string;
+  estimatedPayments?: {
+    item: string;
+    quantity: number;
+    price: number;
+  }[];
   risks: {
     name: string;
     likelihood: string;
@@ -65,6 +71,15 @@ interface SowDocumentProps {
 const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
   // Define a default or brand color based on the data
   const brandColor = data.brandColor || "#0ea5e9"; // Default to a blue color if not provided
+  
+  // Calculate total for estimated payments
+  const calculateTotal = () => {
+    if (!data.estimatedPayments || data.estimatedPayments.length === 0) return 0;
+    
+    return data.estimatedPayments.reduce((total, item) => {
+      return total + (Number(item.quantity) * Number(item.price));
+    }, 0);
+  };
   
   return (
     <div className="bg-white p-8 font-sans" style={{ maxWidth: "800px", margin: "0 auto" }}>
@@ -151,18 +166,30 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Deliverable</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Format</TableHead>
-              <TableHead>Due Date</TableHead>
+              <TableHead className="w-[50%]">Deliverable and Description</TableHead>
+              <TableHead className="w-[25%]">Due Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.deliverables.map((deliverable, index) => (
               <TableRow key={index}>
-                <TableCell>{deliverable.name || "[Deliverable]"}</TableCell>
-                <TableCell>{deliverable.description || "[Description]"}</TableCell>
-                <TableCell>{deliverable.format || "[Format]"}</TableCell>
+                <TableCell>
+                  <div>
+                    <strong>{deliverable.name || "[Deliverable]"}</strong>
+                    {deliverable.description && (
+                      <>
+                        <br />
+                        <span>{deliverable.description}</span>
+                      </>
+                    )}
+                    {deliverable.format && (
+                      <>
+                        <br />
+                        <span className="text-sm text-gray-600">Format: {deliverable.format}</span>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell>{deliverable.dueDate || "[Date]"}</TableCell>
               </TableRow>
             ))}
@@ -175,16 +202,24 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Milestone</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Completion Date</TableHead>
+              <TableHead className="w-[75%]">Milestone and Description</TableHead>
+              <TableHead className="w-[25%]">Completion Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.milestones.map((milestone, index) => (
               <TableRow key={index}>
-                <TableCell>{milestone.name || "[Milestone]"}</TableCell>
-                <TableCell>{milestone.description || "[Description]"}</TableCell>
+                <TableCell>
+                  <div>
+                    <strong>{milestone.name || "[Milestone]"}</strong>
+                    {milestone.description && (
+                      <>
+                        <br />
+                        <span>{milestone.description}</span>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell>{milestone.date || "[Date]"}</TableCell>
               </TableRow>
             ))}
@@ -234,17 +269,48 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">10. Budget and Payment Terms</h2>
+        <h2 className="text-xl font-bold mb-2">10. Project Management</h2>
+        <h3 className="text-lg font-semibold mb-2">10.1 Budget and Payment Terms</h3>
         <p className="whitespace-pre-line">{data.budget || "[Provide detailed cost breakdown]"}</p>
-      </div>
-
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">11. Change Management Process</h2>
+        
+        <h3 className="text-lg font-semibold mt-4 mb-2">10.2 Estimated Payments</h3>
+        {data.estimatedPayments && data.estimatedPayments.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Item</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.estimatedPayments.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.item || "[Item]"}</TableCell>
+                  <TableCell>{item.quantity || 0}</TableCell>
+                  <TableCell>${item.price?.toFixed(2) || "0.00"}</TableCell>
+                  <TableCell>${((Number(item.quantity) || 0) * (Number(item.price) || 0)).toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={3} className="text-right font-semibold">Total:</TableCell>
+                <TableCell className="font-semibold">${calculateTotal().toFixed(2)}</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        ) : (
+          <p className="text-gray-500 italic">[No estimated payments provided]</p>
+        )}
+        
+        <h3 className="text-lg font-semibold mt-4 mb-2">10.3 Change Management Process</h3>
         <p className="whitespace-pre-line">{data.changeManagement || "[Define the process for requesting changes]"}</p>
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">12. Risk Management</h2>
+        <h2 className="text-xl font-bold mb-2">11. Risk Management</h2>
         <Table>
           <TableHeader>
             <TableRow>
@@ -268,17 +334,17 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">13. Communication Plan</h2>
+        <h2 className="text-xl font-bold mb-2">12. Communication Plan</h2>
         <p className="whitespace-pre-line">{data.communicationPlan || "[Specify regular meeting cadence]"}</p>
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">14. Assumptions and Dependencies</h2>
+        <h2 className="text-xl font-bold mb-2">13. Assumptions and Dependencies</h2>
         <p className="whitespace-pre-line">{data.assumptions || "[List all assumptions made in preparing this SOW]"}</p>
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">15. Signatures</h2>
+        <h2 className="text-xl font-bold mb-2">14. Signatures</h2>
         <div className="grid grid-cols-2 gap-8 mt-4">
           <div>
             <p className="font-semibold mb-4">For {data.preparedBy || "[Service Provider]"}:</p>

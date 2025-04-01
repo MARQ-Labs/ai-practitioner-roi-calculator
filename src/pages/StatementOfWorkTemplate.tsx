@@ -28,6 +28,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableFooter,
 } from "@/components/ui/table";
 import {
   Accordion,
@@ -79,6 +80,11 @@ type SowFormData = {
   testingAcceptance: string;
   budget: string;
   changeManagement: string;
+  estimatedPayments: {
+    item: string;
+    quantity: number;
+    price: number;
+  }[];
   risks: {
     name: string;
     likelihood: string;
@@ -105,6 +111,12 @@ const defaultTeamStructure = [
   { role: "", responsibilities: "", personAssigned: "" },
   { role: "", responsibilities: "", personAssigned: "" },
   { role: "", responsibilities: "", personAssigned: "" },
+];
+
+const defaultEstimatedPayments = [
+  { item: "", quantity: 1, price: 0 },
+  { item: "", quantity: 1, price: 0 },
+  { item: "", quantity: 1, price: 0 },
 ];
 
 const defaultRisks = [
@@ -144,6 +156,7 @@ const StatementOfWorkTemplate = () => {
       testingAcceptance: "",
       budget: "",
       changeManagement: "",
+      estimatedPayments: defaultEstimatedPayments,
       risks: defaultRisks,
       communicationPlan: "",
       assumptions: "",
@@ -217,6 +230,12 @@ const StatementOfWorkTemplate = () => {
     form.setValue("teamStructure", [...currentValues, newItem]);
   };
 
+  const addPaymentItem = () => {
+    const currentValues = form.getValues("estimatedPayments");
+    const newItem = { item: "", quantity: 1, price: 0 };
+    form.setValue("estimatedPayments", [...currentValues, newItem]);
+  };
+
   const addRisk = () => {
     const currentValues = form.getValues("risks");
     const newItem = { name: "", likelihood: "Medium", impact: "Medium", mitigation: "" };
@@ -269,6 +288,21 @@ const StatementOfWorkTemplate = () => {
     form.setValue("teamStructure", updatedValues);
   };
 
+  const removePaymentItem = (index: number) => {
+    const currentValues = form.getValues("estimatedPayments");
+    if (currentValues.length <= 1) {
+      toast({
+        title: "Cannot remove item",
+        description: "You must have at least one payment item in the list",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedValues = currentValues.filter((_, i) => i !== index);
+    form.setValue("estimatedPayments", updatedValues);
+  };
+
   const removeRisk = (index: number) => {
     const currentValues = form.getValues("risks");
     if (currentValues.length <= 1) {
@@ -282,6 +316,14 @@ const StatementOfWorkTemplate = () => {
     
     const updatedValues = currentValues.filter((_, i) => i !== index);
     form.setValue("risks", updatedValues);
+  };
+
+  // Calculate estimated payment total
+  const calculateTotal = () => {
+    const payments = form.watch("estimatedPayments");
+    return payments.reduce((total, item) => {
+      return total + (Number(item.quantity) * Number(item.price));
+    }, 0);
   };
 
   return (
@@ -600,7 +642,7 @@ const StatementOfWorkTemplate = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Deliverable</TableHead>
+                    <TableHead>Deliverable Name</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Format</TableHead>
                     <TableHead>Due Date</TableHead>
@@ -661,6 +703,9 @@ const StatementOfWorkTemplate = () => {
                   Add Deliverable
                 </Button>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Note: In the generated document, Deliverable Name, Description, and Format will be merged into a single column.
+              </p>
             </CardContent>
           </Card>
 
@@ -728,6 +773,9 @@ const StatementOfWorkTemplate = () => {
                   Add Milestone
                 </Button>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Note: In the generated document, Milestone and Description will be merged into a single column.
+              </p>
             </CardContent>
           </Card>
 
@@ -801,7 +849,7 @@ const StatementOfWorkTemplate = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Project Requirements</CardTitle>
+              <CardTitle>7. Requirements</CardTitle>
               <CardDescription>Technical specifications and resources needed</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -839,13 +887,20 @@ const StatementOfWorkTemplate = () => {
                   </FormItem>
                 )}
               />
+            </CardContent>
+          </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>8. Performance Criteria</CardTitle>
+              <CardDescription>Metrics for evaluating success</CardDescription>
+            </CardHeader>
+            <CardContent>
               <FormField
                 control={form.control}
                 name="performanceCriteria"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>8. Performance Criteria</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Define specific metrics for evaluating model performance, benchmarks, and thresholds for success." 
@@ -856,13 +911,20 @@ const StatementOfWorkTemplate = () => {
                   </FormItem>
                 )}
               />
+            </CardContent>
+          </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>9. Testing and Acceptance</CardTitle>
+              <CardDescription>Validation procedures</CardDescription>
+            </CardHeader>
+            <CardContent>
               <FormField
                 control={form.control}
                 name="testingAcceptance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>9. Testing and Acceptance</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Outline the testing methodology, acceptance criteria, and validation procedures." 
@@ -879,17 +941,17 @@ const StatementOfWorkTemplate = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Project Management</CardTitle>
+              <CardTitle>10. Project Management</CardTitle>
               <CardDescription>How the project will be managed and controlled</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               
               <FormField
                 control={form.control}
                 name="budget"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>10. Budget and Payment Terms</FormLabel>
+                    <FormLabel>10.1 Budget and Payment Terms</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Provide detailed cost breakdown, payment schedule, and contingency provisions." 
@@ -901,12 +963,94 @@ const StatementOfWorkTemplate = () => {
                 )}
               />
 
+              <div>
+                <FormLabel>10.2 Estimated Payments</FormLabel>
+                <Table className="mt-2">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Item</TableHead>
+                      <TableHead>Quantity</TableHead>
+                      <TableHead>Price ($)</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead className="w-[80px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {form.watch("estimatedPayments").map((_, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <Input
+                            placeholder="Item name"
+                            {...form.register(`estimatedPayments.${index}.item`)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            min="1"
+                            placeholder="1"
+                            {...form.register(`estimatedPayments.${index}.quantity`, {
+                              valueAsNumber: true,
+                            })}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            {...form.register(`estimatedPayments.${index}.price`, {
+                              valueAsNumber: true,
+                            })}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          ${((form.watch(`estimatedPayments.${index}.quantity`) || 0) * 
+                            (form.watch(`estimatedPayments.${index}.price`) || 0)).toFixed(2)}
+                        </TableCell>
+                        <TableCell>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            type="button"
+                            onClick={() => removePaymentItem(index)}
+                            className="h-8 w-8"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-right font-semibold">Total:</TableCell>
+                      <TableCell className="font-semibold">${calculateTotal().toFixed(2)}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addPaymentItem}
+                    className="flex items-center gap-1"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Payment Item
+                  </Button>
+                </div>
+              </div>
+
               <FormField
                 control={form.control}
                 name="changeManagement"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>11. Change Management Process</FormLabel>
+                    <FormLabel>10.3 Change Management Process</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Define the process for requesting changes, approval procedures, and impact assessment requirements." 
@@ -917,139 +1061,3 @@ const StatementOfWorkTemplate = () => {
                   </FormItem>
                 )}
               />
-            </CardContent>
-          </Card>
-
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>12. Risk Management</CardTitle>
-              <CardDescription>Identified risks and mitigation strategies</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Risk</TableHead>
-                    <TableHead>Likelihood</TableHead>
-                    <TableHead>Impact</TableHead>
-                    <TableHead>Mitigation Strategy</TableHead>
-                    <TableHead className="w-[80px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {form.watch("risks").map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <Input
-                          placeholder="Risk name"
-                          {...form.register(`risks.${index}.name`)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          placeholder="High/Medium/Low"
-                          {...form.register(`risks.${index}.likelihood`)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          placeholder="High/Medium/Low"
-                          {...form.register(`risks.${index}.impact`)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          placeholder="Mitigation strategy"
-                          {...form.register(`risks.${index}.mitigation`)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          type="button"
-                          onClick={() => removeRisk(index)}
-                          className="h-8 w-8"
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <div className="mt-2 flex justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addRisk}
-                  className="flex items-center gap-1"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Risk
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Final Details</CardTitle>
-              <CardDescription>Additional information and closure details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              
-              <FormField
-                control={form.control}
-                name="communicationPlan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>13. Communication Plan</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Specify regular meeting cadence, reporting requirements, and key stakeholders." 
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="assumptions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>14. Assumptions and Dependencies</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="List all assumptions made in preparing this SOW and dependencies on client resources or other projects." 
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-center gap-4">
-            <Button type="submit" className="bg-teal-600 hover:bg-teal-700">
-              Generate Statement of Work
-            </Button>
-            <SowExportButton formData={form.watch()} />
-          </div>
-        </form>
-      </Form>
-
-      <PageFooter />
-    </div>
-  );
-};
-
-export default StatementOfWorkTemplate;
