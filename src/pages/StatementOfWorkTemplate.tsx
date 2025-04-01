@@ -1060,4 +1060,3 @@ const StatementOfWorkTemplate = () => {
                     </FormControl>
                   </FormItem>
                 )}
-              />

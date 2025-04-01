@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Table,
@@ -166,7 +165,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50%]">Deliverable and Description</TableHead>
+              <TableHead className="w-[75%]">Deliverable</TableHead>
               <TableHead className="w-[25%]">Due Date</TableHead>
             </TableRow>
           </TableHeader>
@@ -202,7 +201,7 @@ const SowDocument: React.FC<SowDocumentProps> = ({ data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[75%]">Milestone and Description</TableHead>
+              <TableHead className="w-[75%]">Milestone</TableHead>
               <TableHead className="w-[25%]">Completion Date</TableHead>
             </TableRow>
           </TableHeader>
