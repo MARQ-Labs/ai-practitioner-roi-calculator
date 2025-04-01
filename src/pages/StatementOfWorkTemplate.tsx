@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -1061,3 +1062,146 @@ const StatementOfWorkTemplate = () => {
                   </FormItem>
                 )}
               />
+            </CardContent>
+          </Card>
+
+          {/* Risk Management Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>11. Risk Management</CardTitle>
+              <CardDescription>Identify and mitigate potential project risks</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Risk</TableHead>
+                    <TableHead>Likelihood</TableHead>
+                    <TableHead>Impact</TableHead>
+                    <TableHead>Mitigation Strategy</TableHead>
+                    <TableHead className="w-[80px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {form.watch("risks").map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Input
+                          placeholder="Risk description"
+                          {...form.register(`risks.${index}.name`)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          placeholder="Low/Medium/High"
+                          {...form.register(`risks.${index}.likelihood`)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          placeholder="Low/Medium/High"
+                          {...form.register(`risks.${index}.impact`)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          placeholder="How will this risk be mitigated?"
+                          {...form.register(`risks.${index}.mitigation`)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          type="button"
+                          onClick={() => removeRisk(index)}
+                          className="h-8 w-8"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addRisk}
+                  className="flex items-center gap-1"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Risk
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Communication Plan */}
+          <Card>
+            <CardHeader>
+              <CardTitle>12. Communication Plan</CardTitle>
+              <CardDescription>How project information will be shared with stakeholders</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="communicationPlan"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Describe the communication channels, frequency of updates, reporting structure, and documentation procedures." 
+                        className="min-h-[100px]"
+                        {...field} 
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Assumptions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>13. Assumptions</CardTitle>
+              <CardDescription>Baseline factors affecting project success</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="assumptions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="List assumptions about the project environment, resources, and constraints that are presumed to be true for planning purposes." 
+                        className="min-h-[100px]"
+                        {...field} 
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Export Button */}
+          <div className="flex justify-end mt-8">
+            <SowExportButton formData={form.getValues()} />
+            <Button type="submit" className="ml-4 bg-blue-600 hover:bg-blue-700">
+              Submit Form
+            </Button>
+          </div>
+        </form>
+      </Form>
+
+      <PageFooter />
+    </div>
+  );
+};
+
+export default StatementOfWorkTemplate;
